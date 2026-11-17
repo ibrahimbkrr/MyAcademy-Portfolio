@@ -1,0 +1,214 @@
+﻿@model MyAcademy_PortfolioProject.Areas.Admin.Models.SkillCategoryFormViewModel
+
+@{
+    ViewData["Title"] = "Yeni Yetenek Kategorisi";
+    Layout = "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
+}
+
+<style>
+    .skill-form {
+        --green: #2f5d4e;
+        --soft-green: #e7efe9;
+        --line: #ebe8e1;
+    }
+
+        .skill-form .form-card {
+            max-width: 950px;
+            background: #fff;
+            padding: 1.75rem;
+            border: 1px solid var(--line);
+            border-radius: 16px;
+            box-shadow: 0 2px 12px rgba(0,0,0,.04);
+        }
+
+        .skill-form .form-control {
+            background: #fcfbf9;
+            border: 1px solid var(--line);
+            border-radius: 10px;
+            padding: 12px 14px;
+        }
+
+            .skill-form .form-control:focus {
+                border-color: var(--green);
+                box-shadow: 0 0 0 .2rem rgba(47,93,78,.12);
+            }
+
+        .skill-form .form-label {
+            color: #555;
+            font-weight: 600;
+            font-size: .9rem;
+        }
+
+        .skill-form .save-btn {
+            background: var(--green);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 12px 22px;
+        }
+
+            .skill-form .save-btn:hover {
+                background: #244a3e;
+            }
+
+        .skill-form .icon-preview {
+            width: 65px;
+            height: 65px;
+            border-radius: 14px;
+            display: grid;
+            place-items: center;
+            background: var(--soft-green);
+            color: var(--green);
+            font-size: 2rem;
+        }
+</style>
+
+<div class="skill-form container-fluid py-4">
+
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
+        <div>
+            <h4 class="mb-1">Yeni Yetenek Kategorisi</h4>
+            <p class="text-muted mb-0">
+                Yeteneklerinizi gruplandırmak için kategori oluşturun.
+            </p>
+        </div>
+
+        <a asp-area="Admin"
+           asp-controller="SkillCategory"
+           asp-action="CategoryList"
+           class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left me-1"></i>
+            Kategorilere Dön
+        </a>
+    </div>
+
+    <div class="form-card">
+
+        <form asp-area="Admin"
+              asp-controller="SkillCategory"
+              asp-action="CreateCategory"
+              method="post">
+
+            @Html.AntiForgeryToken()
+
+            <div asp-validation-summary="ModelOnly"
+                 class="text-danger mb-3"></div>
+
+            <div class="row g-4">
+
+                <div class="col-md-8">
+
+                    <div class="mb-4">
+                        <label asp-for="CategoryName" class="form-label">
+                            Kategori Adı *
+                        </label>
+
+                        <input asp-for="CategoryName"
+                               class="form-control"
+                               maxlength="100"
+                               placeholder="Örn: Backend Development"
+                               required />
+
+                        <span asp-validation-for="CategoryName"
+                              class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-4">
+                        <label asp-for="Description" class="form-label">
+                            Açıklama
+                        </label>
+
+                        <textarea asp-for="Description"
+                                  class="form-control"
+                                  rows="4"
+                                  maxlength="500"
+                                  placeholder="Bu kategorinin kapsamını açıklayın..."></textarea>
+
+                        <span asp-validation-for="Description"
+                              class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-4">
+                        <label asp-for="IconClass" class="form-label">
+                            İkon Sınıfı
+                        </label>
+
+                        <input asp-for="IconClass"
+                               class="form-control"
+                               maxlength="100"
+                               placeholder="bi bi-code-slash" />
+
+                        <span asp-validation-for="IconClass"
+                              class="text-danger small"></span>
+
+                        <small class="text-muted">
+                            Örn: bi bi-code-slash, bi bi-database,
+                            bi bi-terminal
+                        </small>
+                    </div>
+
+                    <div class="mb-4">
+                        <label asp-for="DisplayOrder" class="form-label">
+                            Gösterim Sırası
+                        </label>
+
+                        <input asp-for="DisplayOrder"
+                               type="number"
+                               min="0"
+                               class="form-control" />
+
+                        <span asp-validation-for="DisplayOrder"
+                              class="text-danger small"></span>
+                    </div>
+
+                </div>
+
+                <div class="col-md-4">
+                    <div class="p-3 rounded-3 border bg-light">
+
+                        <h6>İkon Önizlemesi</h6>
+
+                        <div class="icon-preview mx-auto my-4">
+                            <i id="categoryIconPreview"
+                               class="bi bi-grid"></i>
+                        </div>
+
+                        <p class="small text-muted text-center mb-0">
+                            İkon sınıfını yazdıkça burada görüntülenir.
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+
+            <hr class="my-4" />
+
+            <div class="d-flex justify-content-end gap-2">
+                <a asp-area="Admin"
+                   asp-controller="SkillCategory"
+                   asp-action="CategoryList"
+                   class="btn btn-light px-4">
+                    Vazgeç
+                </a>
+
+                <button type="submit" class="save-btn">
+                    <i class="bi bi-check-circle me-1"></i>
+                    Kategoriyi Kaydet
+                </button>
+            </div>
+
+        </form>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const input = document.getElementById("IconClass");
+        const preview = document.getElementById("categoryIconPreview");
+
+        input.addEventListener("input", function () {
+            const value = this.value.trim();
+            preview.className = value || "bi bi-grid";
+        });
+    });
+</script>

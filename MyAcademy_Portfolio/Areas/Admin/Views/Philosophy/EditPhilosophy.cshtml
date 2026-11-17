@@ -1,0 +1,402 @@
+﻿@model MyAcademy_PortfolioProject.Areas.Admin.Models.PhilosophyFormViewModel
+
+@{
+    ViewData["Title"] = "Felsefem Yönetimi";
+    Layout = "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
+}
+
+<style>
+    .philosophy-admin {
+        --primary-green: #2f5d4e;
+        --soft-green: #e7efe9;
+        --border-color: #ebe8e1;
+    }
+
+        .philosophy-admin .content-card {
+            background: #fff;
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 28px;
+            box-shadow: 0 2px 12px rgba(0,0,0,.04);
+            height: 100%;
+        }
+
+        .philosophy-admin .card-heading {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 25px;
+        }
+
+        .philosophy-admin .card-icon {
+            display: grid;
+            place-items: center;
+            width: 48px;
+            height: 48px;
+            flex-shrink: 0;
+            background: var(--soft-green);
+            color: var(--primary-green);
+            border-radius: 12px;
+            font-size: 1.4rem;
+        }
+
+        .philosophy-admin .form-label {
+            font-weight: 600;
+            font-size: .89rem;
+            color: #555;
+            margin-bottom: 8px;
+        }
+
+        .philosophy-admin .form-control {
+            background: #fcfbf9;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 12px 14px;
+        }
+
+            .philosophy-admin .form-control:focus {
+                border-color: var(--primary-green);
+                box-shadow: 0 0 0 .2rem rgba(47,93,78,.12);
+                background: #fff;
+            }
+
+        .philosophy-admin textarea {
+            min-height: 180px;
+            resize: vertical;
+        }
+
+        .philosophy-admin .preview-box {
+            background: #f8faf7;
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            padding: 30px 24px;
+            text-align: center;
+        }
+
+        .philosophy-admin .quote-icon {
+            font-size: 2.5rem;
+            color: var(--primary-green);
+            opacity: .55;
+        }
+
+        .philosophy-admin .preview-quote {
+            font-size: 1.35rem;
+            font-weight: 600;
+            line-height: 1.8;
+            color: #2e3d35;
+            white-space: pre-wrap;
+            overflow-wrap: anywhere;
+            margin: 20px 0;
+        }
+
+        .philosophy-admin .preview-author {
+            font-weight: 700;
+            color: var(--primary-green);
+            margin-bottom: 12px;
+        }
+
+        .philosophy-admin .preview-subtitle {
+            font-size: .92rem;
+            line-height: 1.7;
+            color: #777;
+            white-space: pre-wrap;
+            overflow-wrap: anywhere;
+        }
+
+        .philosophy-admin .save-btn {
+            background: var(--primary-green);
+            border: none;
+            color: #fff;
+            border-radius: 10px;
+            padding: 12px 22px;
+            font-weight: 600;
+        }
+
+            .philosophy-admin .save-btn:hover {
+                background: #244a3e;
+                color: #fff;
+            }
+
+        .philosophy-admin .note-box {
+            background: #f7faf8;
+            border: 1px solid #dce9e0;
+            border-radius: 11px;
+            color: #557366;
+            padding: 15px;
+            font-size: .85rem;
+            line-height: 1.7;
+        }
+
+    @@media (max-width: 767px) {
+        .philosophy-admin .content-card {
+            padding: 18px;
+        }
+
+        .philosophy-admin .preview-quote {
+            font-size: 1.1rem;
+        }
+    }
+</style>
+
+<div class="philosophy-admin container-fluid py-4">
+
+    <!-- PAGE HEADER -->
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
+
+        <div>
+            <h4 class="mb-1">Felsefem Yönetimi</h4>
+            <p class="text-muted mb-0">
+                Portfolyonuzdaki felsefe ve yaklaşım metinlerini düzenleyin.
+            </p>
+        </div>
+
+        <a asp-area=""
+           asp-controller="Default"
+           asp-action="Index"
+           target="_blank"
+           rel="noopener noreferrer"
+           class="btn btn-outline-secondary">
+
+            <i class="bi bi-box-arrow-up-right me-1"></i>
+            Siteyi Önizle
+        </a>
+    </div>
+
+    <!-- SUCCESS MESSAGE -->
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show"
+             role="alert">
+
+            <i class="bi bi-check-circle-fill me-2"></i>
+            @TempData["SuccessMessage"]
+
+            <button type="button"
+                    class="btn-close"
+                    data-bs-dismiss="alert"
+                    aria-label="Kapat"></button>
+        </div>
+    }
+
+    <form asp-area="Admin"
+          asp-controller="Philosophy"
+          asp-action="EditPhilosophy"
+          method="post"
+          id="philosophyForm">
+
+        @Html.AntiForgeryToken()
+
+        <input asp-for="PhilosophyId" type="hidden" />
+
+        <div asp-validation-summary="ModelOnly"
+             class="text-danger mb-3"></div>
+
+        <div class="row g-4">
+
+            <!-- LEFT COLUMN -->
+            <div class="col-lg-7">
+
+                <div class="content-card">
+
+                    <div class="card-heading">
+                        <div class="card-icon">
+                            <i class="bi bi-chat-square-quote"></i>
+                        </div>
+
+                        <div>
+                            <h5 class="mb-1">Felsefe İçeriği</h5>
+                            <small class="text-muted">
+                                Ana metin, yazar ve alt açıklama
+                            </small>
+                        </div>
+                    </div>
+
+                    <!-- QUOTE -->
+                    <div class="mb-4">
+
+                        <label asp-for="Quote" class="form-label">
+                            Felsefe Metni *
+                        </label>
+
+                        <textarea asp-for="Quote"
+                                  class="form-control"
+                                  rows="7"
+                                  maxlength="2000"
+                                  required
+                                  placeholder="Çalışma felsefenizi veya sizi anlatan bir alıntıyı yazın..."></textarea>
+
+                        <span asp-validation-for="Quote"
+                              class="text-danger small"></span>
+
+                        <div class="d-flex justify-content-between mt-2">
+                            <small class="text-muted">
+                                Ana sayfada alıntı olarak gösterilir.
+                            </small>
+                            <small class="text-muted"
+                                   id="quoteCounter"></small>
+                        </div>
+                    </div>
+
+                    <!-- AUTHOR -->
+                    <div class="mb-4">
+
+                        <label asp-for="Author" class="form-label">
+                            Yazar / İmza
+                        </label>
+
+                        <input asp-for="Author"
+                               class="form-control"
+                               maxlength="150"
+                               placeholder="Alıntının yazarı veya imza" />
+
+                        <span asp-validation-for="Author"
+                              class="text-danger small"></span>
+                    </div>
+
+                    <!-- SUBTITLE -->
+                    <div class="mb-4">
+
+                        <label asp-for="Subtitle" class="form-label">
+                            Alt Açıklama
+                        </label>
+
+                        <textarea asp-for="Subtitle"
+                                  class="form-control"
+                                  rows="4"
+                                  maxlength="1000"
+                                  placeholder="Felsefe bölümünü destekleyen kısa açıklama..."></textarea>
+
+                        <span asp-validation-for="Subtitle"
+                              class="text-danger small"></span>
+                    </div>
+
+                    <!-- ACTIONS -->
+                    <div class="d-flex flex-wrap gap-2">
+
+                        <button type="submit"
+                                class="save-btn"
+                                id="savePhilosophyButton">
+
+                            <i class="bi bi-check-circle me-1"></i>
+                            Değişiklikleri Kaydet
+                        </button>
+
+                        <button type="reset"
+                                class="btn btn-light px-4 py-2">
+                            <i class="bi bi-arrow-counterclockwise me-1"></i>
+                            Geri Al
+                        </button>
+
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- RIGHT COLUMN -->
+            <div class="col-lg-5">
+
+                <div class="content-card">
+
+                    <div class="card-heading">
+                        <div class="card-icon">
+                            <i class="bi bi-eye"></i>
+                        </div>
+
+                        <div>
+                            <h5 class="mb-1">Canlı Önizleme</h5>
+                            <small class="text-muted">
+                                Metinleri yazdıkça görünüm güncellenir
+                            </small>
+                        </div>
+                    </div>
+
+                    <div class="preview-box">
+
+                        <i class="bi bi-quote quote-icon"></i>
+
+                        <div id="previewQuote"
+                             class="preview-quote"></div>
+
+                        <div id="previewAuthor"
+                             class="preview-author"></div>
+
+                        <div id="previewSubtitle"
+                             class="preview-subtitle"></div>
+
+                    </div>
+
+                    <div class="note-box mt-4">
+
+                        <i class="bi bi-info-circle me-1"></i>
+
+                        Bu alan Admin paneline özel bir önizlemedir.
+                        Gerçek felsefe bölümü, frontend tasarımınıza göre
+                        görüntülenir. Değişiklikler kaydedilene kadar
+                        veritabanına aktarılmaz.
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </form>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+
+        const form = document.getElementById("philosophyForm");
+        const quote = document.getElementById("Quote");
+        const author = document.getElementById("Author");
+        const subtitle = document.getElementById("Subtitle");
+
+        const previewQuote = document.getElementById("previewQuote");
+        const previewAuthor = document.getElementById("previewAuthor");
+        const previewSubtitle = document.getElementById("previewSubtitle");
+        const quoteCounter = document.getElementById("quoteCounter");
+
+        const saveButton =
+            document.getElementById("savePhilosophyButton");
+
+        function updatePreview() {
+
+            previewQuote.textContent =
+                quote.value.trim() || "Felsefe metniniz burada görünecek.";
+
+            previewAuthor.textContent =
+                author.value.trim();
+
+            previewSubtitle.textContent =
+                subtitle.value.trim();
+
+            quoteCounter.textContent =
+                quote.value.length + " / 2000";
+        }
+
+        // Input değişikliklerini dinle
+        [quote, author, subtitle].forEach(function (input) {
+            input.addEventListener("input", updatePreview);
+        });
+
+        // Geri al işleminde önizlemeyi de güncelle
+        form.addEventListener("reset", function () {
+            requestAnimationFrame(updatePreview);
+        });
+
+        // Kaydet
+        form.addEventListener("submit", function () {
+
+            if (!form.checkValidity()) {
+                return;
+            }
+
+            saveButton.disabled = true;
+
+            saveButton.innerHTML =
+                '<span class="spinner-border spinner-border-sm me-2"></span>' +
+                'Kaydediliyor...';
+        });
+
+        updatePreview();
+    });
+</script>

@@ -1,0 +1,265 @@
+﻿@model List<MyAcademy_PortfolioProject.Entities.SkillCategory>
+
+@{
+    ViewData["Title"] = "Yetenek Kategorileri";
+    Layout = "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
+
+    var categoryCount = Model.Count;
+    var skillCount = Model.Sum(x => x.Skills.Count);
+}
+
+<style>
+    .skill-admin {
+        --green: #2f5d4e;
+        --soft-green: #e7efe9;
+        --line: #ebe8e1;
+    }
+
+        .skill-admin .admin-card {
+            background: #fff;
+            border: 1px solid var(--line);
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 12px rgba(0,0,0,.04);
+        }
+
+        .skill-admin .admin-stat {
+            background: #fff;
+            border: 1px solid var(--line);
+            border-radius: 14px;
+            padding: 1.25rem;
+        }
+
+            .skill-admin .admin-stat h3 {
+                font-size: 1.8rem;
+                font-weight: 700;
+                margin: 5px 0 0;
+            }
+
+        .skill-admin .admin-primary-btn {
+            display: inline-block;
+            background: var(--green);
+            color: #fff;
+            border: 0;
+            border-radius: 10px;
+            padding: 10px 18px;
+            text-decoration: none;
+        }
+
+            .skill-admin .admin-primary-btn:hover {
+                background: #244a3e;
+                color: #fff;
+            }
+
+        .skill-admin .category-icon {
+            width: 42px;
+            height: 42px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 10px;
+            background: var(--soft-green);
+            color: var(--green);
+            font-size: 1.2rem;
+        }
+
+        .skill-admin .order-pill {
+            background: var(--soft-green);
+            color: var(--green);
+            border-radius: 8px;
+            padding: 5px 11px;
+            font-weight: 600;
+        }
+</style>
+
+<div class="skill-admin container-fluid py-4">
+
+    <!-- HEADER -->
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
+        <div>
+            <h4 class="mb-1">Yetenek Kategorileri</h4>
+            <p class="text-muted mb-0">
+                Yeteneklerinizi gruplandıran kategorileri yönetin.
+            </p>
+        </div>
+
+        <div class="d-flex flex-wrap gap-2">
+            <a asp-area="Admin"
+               asp-controller="Skill"
+               asp-action="SkillList"
+               class="btn btn-outline-secondary">
+                <i class="bi bi-list-ul me-1"></i>
+                Yetenekler
+            </a>
+
+            <a asp-area="Admin"
+               asp-controller="SkillCategory"
+               asp-action="CreateCategory"
+               class="admin-primary-btn">
+                <i class="bi bi-plus-lg me-1"></i>
+                Yeni Kategori
+            </a>
+        </div>
+    </div>
+
+    <!-- NOTIFICATIONS -->
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="bi bi-check-circle-fill me-2"></i>
+            @TempData["SuccessMessage"]
+
+            <button type="button"
+                    class="btn-close"
+                    data-bs-dismiss="alert"
+                    aria-label="Kapat"></button>
+        </div>
+    }
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+            @TempData["ErrorMessage"]
+
+            <button type="button"
+                    class="btn-close"
+                    data-bs-dismiss="alert"
+                    aria-label="Kapat"></button>
+        </div>
+    }
+
+    <!-- STATISTICS -->
+    <div class="row g-3 mb-4">
+        <div class="col-md-4">
+            <div class="admin-stat">
+                <small class="text-muted">Toplam Kategori</small>
+                <h3>@categoryCount</h3>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="admin-stat">
+                <small class="text-muted">Toplam Yetenek</small>
+                <h3>@skillCount</h3>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="admin-stat">
+                <small class="text-muted">Kullanılan Kategori</small>
+                <h3>@Model.Count(x => x.Skills.Any())</h3>
+            </div>
+        </div>
+    </div>
+
+    <!-- TABLE -->
+    <div class="admin-card">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th>ID</th>
+                        <th>İkon</th>
+                        <th>Kategori</th>
+                        <th>Yetenek Sayısı</th>
+                        <th>Sıralama</th>
+                        <th>İşlemler</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>#@item.SkillCategoryId</td>
+
+                            <td>
+                                <div class="category-icon">
+                                    <i class="@(string.IsNullOrWhiteSpace(item.IconClass)
+                                                                               ? "bi bi-grid"
+                                                                               : item.IconClass)"></i>
+                                                                                         </div>
+                                                                                     </td>
+
+                            <td>
+                                <div class="fw-semibold">@item.CategoryName</div>
+
+                                <small class="text-muted">
+                                    @(string.IsNullOrWhiteSpace(item.Description)
+                                                                    ? "Açıklama bulunmuyor."
+                                                                    : item.Description)
+                            </small>
+                        </td>
+
+                            <td>
+                                <span class="badge bg-light text-dark border">
+                                    @item.Skills.Count yetenek
+                                </span>
+                            </td>
+
+                            <td>
+                                <span class="order-pill">@item.DisplayOrder</span>
+                            </td>
+
+                            <td>
+                                <div class="d-flex flex-wrap gap-2">
+
+                                    <a asp-area="Admin"
+                                       asp-controller="SkillCategory"
+                                       asp-action="UpdateCategory"
+                                       asp-route-id="@item.SkillCategoryId"
+                                       class="btn btn-warning btn-sm">
+                                        <i class="bi bi-pencil-square me-1"></i>
+                                        Düzenle
+                                    </a>
+
+                                @if (!item.Skills.Any())
+                                    {
+                                        <form asp-area="Admin"
+                                              asp-controller="SkillCategory"
+                                              asp-action="DeleteCategory"
+                                              asp-route-id="@item.SkillCategoryId"
+                                              method="post"
+                                              onsubmit="return confirm('Bu kategoriyi kalıcı olarak silmek istiyor musunuz?');">
+
+                                            @Html.AntiForgeryToken()
+
+                                            <button type="submit"
+                                                    class="btn btn-danger btn-sm">
+                                                <i class="bi bi-trash me-1"></i>
+                                                Sil
+                                            </button>
+                                        </form>
+                                    }
+                                    else
+                                    {
+                                        <button type="button"
+                                                class="btn btn-outline-secondary btn-sm"
+                                                title="Kategoriye bağlı yetenekler var"
+                                                disabled>
+                                            <i class="bi bi-lock me-1"></i>
+                                            Silinemez
+                                        </button>
+                                    }
+
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        @if (!Model.Any())
+        {
+            <div class="text-center py-5">
+                <i class="bi bi-grid fs-1 text-muted"></i>
+                <h5 class="mt-3">Henüz kategori bulunmuyor</h5>
+                <p class="text-muted">
+                    İlk yetenek kategorinizi oluşturabilirsiniz.
+                </p>
+            </div>
+        }
+    </div>
+</div>

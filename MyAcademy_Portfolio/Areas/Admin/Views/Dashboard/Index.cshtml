@@ -1,0 +1,435 @@
+﻿@model MyAcademy_PortfolioProject.Areas.Admin.Models.DashboardViewModel
+
+@using System.Globalization
+
+@{
+    ViewData["Title"] = "Dashboard";
+    Layout = "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
+
+    var culture = CultureInfo.GetCultureInfo("tr-TR");
+
+    var max = Math.Max(
+        1,
+        Model.WeeklyCounts.DefaultIfEmpty(0).Max()
+    );
+
+    var stats = new[]
+    {
+        (
+            Val: Model.TotalMessages,
+            Lbl: "Toplam Mesaj",
+            Icon: "bi-envelope",
+            Cls: "c-green"
+        ),
+        (
+            Val: Model.UnreadMessages,
+            Lbl: "Okunmamış",
+            Icon: "bi-envelope-exclamation",
+            Cls: "c-rose"
+        ),
+        (
+            Val: Model.ReadMessages,
+            Lbl: "Okunmuş",
+            Icon: "bi-envelope-check",
+            Cls: "c-blue"
+        )
+    };
+}
+
+<style>
+    .db {
+        --g: #2f5d4e;
+        --g-soft: #e7efe9;
+        --line: #ebe8e1;
+        --muted: #8a8a85;
+    }
+
+    .db-card {
+        background: #fff;
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        padding: 1.4rem;
+        height: 100%;
+    }
+
+    .db-title {
+        font-weight: 600;
+        margin-bottom: 1.2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+        .db-title small {
+            color: var(--muted);
+            font-weight: 400;
+        }
+
+    .stat {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .stat-icon {
+        width: 52px;
+        height: 52px;
+        border-radius: 14px;
+        display: grid;
+        place-items: center;
+        font-size: 1.4rem;
+    }
+
+    .stat-val {
+        font-size: 1.8rem;
+        font-weight: 700;
+        line-height: 1;
+    }
+
+    .stat-lbl {
+        color: var(--muted);
+        font-size: .85rem;
+        margin-top: .3rem;
+    }
+
+    .c-green {
+        background: var(--g-soft);
+        color: var(--g);
+    }
+
+    .c-blue {
+        background: #e6eef8;
+        color: #3b6ea5;
+    }
+
+    .c-rose {
+        background: #f9e7e7;
+        color: #b44b4b;
+    }
+
+    .bars {
+        display: flex;
+        align-items: flex-end;
+        gap: .8rem;
+        height: 190px;
+    }
+
+    .bar {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-end;
+        height: 100%;
+        gap: .4rem;
+    }
+
+    .bar-fill {
+        width: 100%;
+        max-width: 42px;
+        background: var(--g);
+        border-radius: 8px 8px 4px 4px;
+        opacity: .85;
+        transition: opacity .2s;
+    }
+
+    .bar:hover .bar-fill {
+        opacity: 1;
+    }
+
+    .bar span {
+        font-size: .75rem;
+        color: var(--muted);
+    }
+
+    .bar b {
+        font-size: .8rem;
+    }
+
+    .donut {
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        margin: .5rem auto 1.2rem;
+        display: grid;
+        place-items: center;
+        background: conic-gradient( var(--g) calc(var(--p) * 1%), var(--g-soft) 0 );
+    }
+
+        .donut div {
+            width: 110px;
+            height: 110px;
+            border-radius: 50%;
+            background: #fff;
+            display: grid;
+            place-items: center;
+            font-size: 1.6rem;
+            font-weight: 700;
+        }
+
+    .legend {
+        display: flex;
+        justify-content: center;
+        gap: 1.2rem;
+        font-size: .85rem;
+        color: var(--muted);
+    }
+
+        .legend i {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 3px;
+            margin-right: .35rem;
+        }
+
+    .msg-row {
+        display: flex;
+        align-items: center;
+        gap: .9rem;
+        padding: .8rem 0;
+        border-bottom: 1px solid var(--line);
+    }
+
+        .msg-row:last-child {
+            border-bottom: none;
+        }
+
+    .avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: var(--g-soft);
+        color: var(--g);
+        display: grid;
+        place-items: center;
+        font-weight: 600;
+        flex-shrink: 0;
+    }
+
+    .msg-body {
+        flex: 1;
+        min-width: 0;
+    }
+
+        .msg-body p {
+            margin: 0;
+            color: var(--muted);
+            font-size: .85rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+    .badge-soft {
+        font-size: .72rem;
+        padding: .3rem .6rem;
+        border-radius: 20px;
+        white-space: nowrap;
+    }
+</style>
+
+<div class="db container-fluid py-3">
+
+    <!-- ==================== 1. STATISTICS ==================== -->
+    <div class="row g-4 mb-4">
+
+        @foreach (var stat in stats)
+        {
+            <div class="col-md-4">
+                <div class="db-card stat">
+
+                    <div class="stat-icon @stat.Cls">
+                        <i class="bi @stat.Icon"></i>
+                    </div>
+
+                    <div>
+                        <div class="stat-val">
+                            @stat.Val
+                        </div>
+
+                        <div class="stat-lbl">
+                            @stat.Lbl
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        }
+
+    </div>
+
+
+    <!-- ==================== 2. CHARTS ==================== -->
+    <div class="row g-4 mb-4">
+
+        <!-- Last 7 Days Message Chart -->
+        <div class="col-xl-8">
+
+            <div class="db-card">
+
+                <div class="db-title">
+                    Son 7 Gün
+                    <small>Günlük gelen mesajlar (UTC)</small>
+                </div>
+
+                <div class="bars">
+
+                    @for (int i = 0; i < Model.WeeklyDates.Count; i++)
+                    {
+                        var date = Model.WeeklyDates[i];
+                        var count = Model.WeeklyCounts[i];
+
+                        var height = count == 0
+                        ? 0
+                        : Math.Max(
+                        5,
+                        count * 100.0 / max
+                        );
+
+                        <div class="bar">
+
+                            <b>@count</b>
+
+                            <div class="bar-fill"
+                                 style="height:@height.ToString("0.##", CultureInfo.InvariantCulture)%">
+                            </div>
+
+                            <span title="@date.ToString("dd.MM.yyyy")">
+                                @date.ToString("ddd", culture)
+                            </span>
+
+                        </div>
+                    }
+
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Read Rate Chart -->
+        <div class="col-xl-4">
+
+            <div class="db-card">
+
+                <div class="db-title">
+                    Okunma Oranı
+                </div>
+
+                <div class="donut"
+                     style="--p:@Model.ReadRate">
+
+                    <div>
+                        %@Model.ReadRate
+                    </div>
+
+                </div>
+
+                <div class="legend">
+
+                    <span>
+                        <i style="background:var(--g)"></i>
+                        Okundu (@Model.ReadMessages)
+                    </span>
+
+                    <span>
+                        <i style="background:var(--g-soft)"></i>
+                        Okunmadı (@Model.UnreadMessages)
+                    </span>
+
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+
+    <!-- ==================== 3. RECENT MESSAGES ==================== -->
+    <div class="db-card">
+
+        <div class="db-title">
+
+            Son Mesajlar
+
+            <a asp-area="Admin"
+               asp-controller="Message"
+               asp-action="MessageList"
+               class="small text-decoration-none"
+               style="color:var(--g)">
+                Tümünü gör →
+            </a>
+
+        </div>
+
+
+        @if (Model.RecentMessages.Any())
+        {
+            @foreach (var message in Model.RecentMessages)
+            {
+                <div class="msg-row">
+
+                    <!-- Avatar -->
+                    <div class="avatar">
+                        @(string.IsNullOrWhiteSpace(message.SenderName)
+                                        ? "?"
+                                        : message.SenderName.Substring(0, 1).ToUpper(culture))
+            </div>
+
+                    <!-- Sender and Content -->
+                    <div class="msg-body">
+
+                        <strong>
+                            @message.SenderName
+                        </strong>
+
+                @if (!string.IsNullOrWhiteSpace(message.Subject))
+                        {
+                            <span class="small">
+                                · @message.Subject
+                            </span>
+                        }
+
+                        <p title="@message.MessageContent">
+                            @message.MessageContent
+                        </p>
+
+                    </div>
+
+                    <!-- Message Date -->
+                    <small class="text-muted d-none d-md-block">
+                        @message.SentDate.ToString("dd MMM yyyy HH:mm", culture)
+                    </small>
+
+                    <!-- Read Status -->
+                    @if (message.IsRead)
+                    {
+                        <span class="badge-soft c-blue">
+                            Okundu
+                        </span>
+                    }
+                    else
+                    {
+                        <span class="badge-soft c-rose">
+                            Yeni
+                        </span>
+                    }
+
+                </div>
+            }
+        }
+        else
+        {
+            <!-- Empty State -->
+            <div class="text-center py-4 text-muted">
+
+                <i class="bi bi-inbox fs-2 d-block mb-2"></i>
+
+                Henüz gelen mesaj bulunmuyor.
+
+            </div>
+        }
+
+    </div>
+
+</div>

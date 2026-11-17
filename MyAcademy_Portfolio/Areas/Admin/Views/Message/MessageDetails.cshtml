@@ -1,0 +1,202 @@
+﻿@model MyAcademy_PortfolioProject.Entities.Message
+
+@{
+    ViewData["Title"] = "Mesaj Detayı";
+    Layout = "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
+}
+
+<style>
+    .detail-card {
+        max-width: 1000px;
+        border: none;
+        border-radius: 14px;
+        box-shadow: 0 2px 12px rgba(0,0,0,.06);
+    }
+
+    .detail-content {
+        background: #f8f9fa;
+        border: 1px solid #eee;
+        border-radius: 10px;
+        padding: 1.5rem;
+        white-space: pre-wrap;
+        overflow-wrap: anywhere;
+        min-height: 180px;
+    }
+
+    .detail-label {
+        font-size: .85rem;
+        color: #888;
+        margin-bottom: .4rem;
+    }
+</style>
+
+<div class="container-fluid py-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+            <h4 class="mb-1">Mesaj Detayı</h4>
+
+            <p class="text-muted mb-0">
+                #@Model.MessageId numaralı mesaj
+            </p>
+        </div>
+
+        <a asp-area="Admin"
+           asp-controller="Message"
+           asp-action="MessageList"
+           class="btn btn-light">
+            <i class="bi bi-arrow-left me-1"></i>
+            Listeye Dön
+        </a>
+
+    </div>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success"
+             role="status">
+            <i class="bi bi-check-circle-fill me-2"></i>
+            @TempData["SuccessMessage"]
+        </div>
+    }
+
+    <div class="card detail-card">
+
+        <div class="card-body p-4">
+
+            <!-- Header -->
+            <div class="d-flex justify-content-between align-items-start mb-4 gap-3">
+
+                <div>
+                    <h4 class="mb-2">
+                        @(string.IsNullOrWhiteSpace(Model.Subject)
+                                                ? "Konu belirtilmemiş"
+                                                : Model.Subject)
+                    </h4>
+
+                    <small class="text-muted">
+                        <i class="bi bi-clock me-1"></i>
+                        @Model.SentDate.ToString("dd.MM.yyyy HH:mm") (UTC)
+                    </small>
+                </div>
+
+                @if (Model.IsRead)
+                {
+                    <span class="badge bg-success">
+                        <i class="bi bi-check-circle me-1"></i>
+                        Okundu
+                    </span>
+                }
+                else
+                {
+                    <span class="badge bg-warning text-dark">
+                        Okunmadı
+                    </span>
+                }
+
+            </div>
+
+            <hr />
+
+            <!-- Sender Information -->
+            <div class="row mb-4">
+
+                <div class="col-md-6 mb-3">
+                    <div class="detail-label">
+                        Gönderen
+                    </div>
+
+                    <div class="fw-semibold">
+                        <i class="bi bi-person me-1"></i>
+                        @Model.SenderName
+                    </div>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <div class="detail-label">
+                        E-posta Adresi
+                    </div>
+
+                    <div>
+                        <i class="bi bi-envelope me-1"></i>
+
+                        <a href="mailto:@Model.SenderEmail"
+                           class="text-decoration-none">
+                            @Model.SenderEmail
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Message Content -->
+            <div class="mb-4">
+
+                <div class="detail-label mb-2">
+                    Mesaj İçeriği
+                </div>
+
+                <div class="detail-content">@Model.MessageContent</div>
+
+            </div>
+
+            <!-- Actions -->
+            <div class="d-flex justify-content-end flex-wrap gap-2">
+
+                <a asp-area="Admin"
+                   asp-controller="Message"
+                   asp-action="MessageList"
+                   class="btn btn-light">
+                    Listeye Dön
+                </a>
+
+                @if (!Model.IsRead)
+                {
+                    <form asp-area="Admin"
+                          asp-controller="Message"
+                          asp-action="MarkAsRead"
+                          asp-route-id="@Model.MessageId"
+                          method="post">
+
+                        @Html.AntiForgeryToken()
+
+                        <button type="submit"
+                                class="btn btn-success">
+                            <i class="bi bi-check-circle me-1"></i>
+                            Okundu Olarak İşaretle
+                        </button>
+                    </form>
+                }
+                else
+                {
+                    <form asp-area="Admin"
+                          asp-controller="Message"
+                          asp-action="MarkAsUnread"
+                          asp-route-id="@Model.MessageId"
+                          method="post">
+
+                        @Html.AntiForgeryToken()
+
+                        <button type="submit"
+                                class="btn btn-outline-secondary">
+                            <i class="bi bi-envelope me-1"></i>
+                            Okunmadı Olarak İşaretle
+                        </button>
+                    </form>
+                }
+
+                <a asp-area="Admin"
+                   asp-controller="Message"
+                   asp-action="UpdateMessage"
+                   asp-route-id="@Model.MessageId"
+                   class="btn btn-warning">
+                    <i class="bi bi-pencil-square me-1"></i>
+                    Mesajı Düzenle
+                </a>
+
+            </div>
+
+        </div>
+    </div>
+</div>

@@ -1,0 +1,897 @@
+﻿@model MyAcademy_PortfolioProject.Areas.Admin.Models.ContactFormViewModel
+
+@{
+    ViewData["Title"] = "İletişim Yönetimi";
+    Layout = "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
+
+    var hasExistingRecord = Model.ContactId > 0;
+
+    var hasEmail = !string.IsNullOrWhiteSpace(Model.Email);
+    var hasPhone = !string.IsNullOrWhiteSpace(Model.PhoneNumber);
+    var hasLocation = !string.IsNullOrWhiteSpace(Model.Location);
+}
+
+<style>
+    .contact-admin {
+        --contact-green: #2f5d4e;
+        --contact-green-dark: #244a3e;
+        --contact-green-soft: #e7efe9;
+        --contact-border: #ebe8e1;
+        --contact-muted: #858780;
+    }
+
+        .contact-admin .contact-card {
+            background: #fff;
+            border: 1px solid var(--contact-border);
+            border-radius: 16px;
+            padding: 26px;
+            box-shadow: 0 2px 12px rgba(0,0,0,.04);
+            height: 100%;
+        }
+
+        .contact-admin .contact-card-heading {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 25px;
+        }
+
+        .contact-admin .contact-card-icon {
+            display: grid;
+            place-items: center;
+            width: 48px;
+            height: 48px;
+            flex-shrink: 0;
+            background: var(--contact-green-soft);
+            color: var(--contact-green);
+            border-radius: 12px;
+            font-size: 1.35rem;
+        }
+
+        .contact-admin .contact-card-heading h5 {
+            margin-bottom: 4px;
+            font-weight: 600;
+        }
+
+        .contact-admin .contact-card-heading small {
+            color: var(--contact-muted);
+        }
+
+        .contact-admin .form-label {
+            color: #555;
+            font-weight: 600;
+            font-size: .89rem;
+            margin-bottom: 8px;
+        }
+
+        .contact-admin .form-control {
+            border: 1px solid var(--contact-border);
+            background: #fcfbf9;
+            border-radius: 10px;
+            padding: 12px 14px;
+            transition: border-color .2s, box-shadow .2s;
+        }
+
+            .contact-admin .form-control:focus {
+                background: white;
+                border-color: var(--contact-green);
+                box-shadow: 0 0 0 .2rem rgba(47,93,78,.12);
+            }
+
+        .contact-admin textarea {
+            min-height: 150px;
+            resize: vertical;
+        }
+
+        .contact-admin .input-group-text {
+            background: var(--contact-green-soft);
+            color: var(--contact-green);
+            border: 1px solid var(--contact-border);
+            border-radius: 10px 0 0 10px;
+            min-width: 45px;
+            justify-content: center;
+        }
+
+        .contact-admin .input-group .form-control {
+            border-radius: 0 10px 10px 0;
+        }
+
+        .contact-admin .save-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 12px 22px;
+            background: var(--contact-green);
+            color: white;
+            font-weight: 600;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+
+            .contact-admin .save-btn:hover {
+                background: var(--contact-green-dark);
+                color: white;
+            }
+
+            .contact-admin .save-btn:disabled {
+                opacity: .7;
+                cursor: not-allowed;
+            }
+
+        .contact-admin .preview-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 11px 17px;
+            border-radius: 10px;
+            background: white;
+            border: 1px solid var(--contact-border);
+            text-decoration: none;
+            color: #555;
+        }
+
+            .contact-admin .preview-btn:hover {
+                background: #f7f6f2;
+                color: #333;
+            }
+
+        .contact-admin .contact-preview {
+            background: #f9faf8;
+            border: 1px solid var(--contact-border);
+            border-radius: 14px;
+            padding: 22px;
+        }
+
+        .contact-admin .preview-eyebrow {
+            color: var(--contact-green);
+            letter-spacing: .1em;
+            font-size: .77rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            overflow-wrap: anywhere;
+        }
+
+        .contact-admin .preview-title {
+            color: #293a31;
+            font-size: 1.6rem;
+            font-weight: 700;
+            margin: 15px 0;
+            overflow-wrap: anywhere;
+        }
+
+        .contact-admin .preview-description {
+            color: #727670;
+            line-height: 1.8;
+            white-space: pre-wrap;
+            overflow-wrap: anywhere;
+        }
+
+        .contact-admin .info-preview-card {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            padding: 17px;
+            background: #fff;
+            border: 1px solid var(--contact-border);
+            border-radius: 12px;
+            margin-bottom: 12px;
+        }
+
+        .contact-admin .info-preview-icon {
+            display: grid;
+            place-items: center;
+            width: 44px;
+            height: 44px;
+            border-radius: 11px;
+            flex-shrink: 0;
+            background: var(--contact-green-soft);
+            color: var(--contact-green);
+            font-size: 1.2rem;
+        }
+
+        .contact-admin .info-preview-label {
+            font-size: .8rem;
+            color: #888;
+            margin-bottom: 5px;
+        }
+
+        .contact-admin .info-preview-value {
+            font-size: .92rem;
+            font-weight: 600;
+            color: #333;
+            overflow-wrap: anywhere;
+            word-break: break-word;
+        }
+
+            .contact-admin .info-preview-value a {
+                color: var(--contact-green);
+                text-decoration: none;
+            }
+
+                .contact-admin .info-preview-value a:hover {
+                    text-decoration: underline;
+                }
+
+        .contact-admin .note-box {
+            background: #f7faf8;
+            border: 1px solid #dce9e0;
+            border-radius: 11px;
+            padding: 15px;
+            color: #557366;
+            font-size: .85rem;
+            line-height: 1.7;
+        }
+
+        .contact-admin .record-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            padding: 8px 13px;
+            border-radius: 9px;
+            background: var(--contact-green-soft);
+            color: var(--contact-green);
+            font-size: .82rem;
+            font-weight: 600;
+        }
+
+        .contact-admin .text-danger {
+            font-size: .82rem;
+        }
+
+    @@media (max-width: 767px) {
+        .contact-admin .contact-card {
+            padding: 18px;
+        }
+
+        .contact-admin .preview-title {
+            font-size: 1.35rem;
+        }
+    }
+</style>
+
+<div class="contact-admin container-fluid py-4">
+
+    <!-- PAGE HEADER -->
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
+
+        <div>
+            <h4 class="mb-1">İletişim Yönetimi</h4>
+
+            <p class="text-muted mb-0">
+                Portfolyonuzdaki iletişim bölümünün
+                içeriklerini ve iletişim bilgilerini yönetin.
+            </p>
+        </div>
+
+        <div class="d-flex align-items-center gap-2 flex-wrap">
+
+            @if (hasExistingRecord)
+            {
+                <span class="record-status">
+                    <i class="bi bi-database-check"></i>
+                    Kayıt #@Model.ContactId
+                </span>
+            }
+            else
+            {
+                <span class="record-status">
+                    <i class="bi bi-plus-circle"></i>
+                    İlk Kayıt
+                </span>
+            }
+
+            <a asp-area=""
+               asp-controller="Default"
+               asp-action="Index"
+               target="_blank"
+               rel="noopener noreferrer"
+               class="preview-btn">
+
+                <i class="bi bi-box-arrow-up-right"></i>
+                Siteyi Önizle
+            </a>
+
+        </div>
+    </div>
+
+    <!-- SUCCESS MESSAGE -->
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show"
+             role="alert">
+
+            <i class="bi bi-check-circle-fill me-2"></i>
+            @TempData["SuccessMessage"]
+
+            <button type="button"
+                    class="btn-close"
+                    data-bs-dismiss="alert"
+                    aria-label="Kapat">
+            </button>
+        </div>
+    }
+
+    <!-- CONTACT FORM -->
+    <form asp-area="Admin"
+          asp-controller="Contact"
+          asp-action="EditContact"
+          method="post"
+          id="editContactForm">
+
+        @Html.AntiForgeryToken()
+
+        <input asp-for="ContactId" type="hidden" />
+
+        @if (ViewData.ModelState.Values
+                .Any(x => x.Errors.Count > 0))
+        {
+            <div class="alert alert-danger mb-4" role="alert">
+                <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                Lütfen formdaki hatalı alanları kontrol edin.
+
+                <div asp-validation-summary="ModelOnly"
+                     class="mt-2"></div>
+            </div>
+        }
+
+        <div class="row g-4">
+
+            <!-- LEFT COLUMN -->
+            <div class="col-xl-7">
+
+                <!-- SECTION CONTENT -->
+                <div class="contact-card mb-4">
+
+                    <div class="contact-card-heading">
+
+                        <div class="contact-card-icon">
+                            <i class="bi bi-chat-square-text"></i>
+                        </div>
+
+                        <div>
+                            <h5>Bölüm İçeriği</h5>
+
+                            <small>
+                                Ana sayfadaki iletişim bölümünün
+                                başlık ve açıklama metinleri
+                            </small>
+                        </div>
+
+                    </div>
+
+                    <!-- SECTION LABEL -->
+                    <div class="mb-4">
+
+                        <label asp-for="SectionLabel"
+                               class="form-label">
+                            Bölüm Etiketi *
+                        </label>
+
+                        <input asp-for="SectionLabel"
+                               class="form-control"
+                               maxlength="100"
+                               required
+                               placeholder="Örn: BENİMLE İLETİŞİME GEÇİN" />
+
+                        <span asp-validation-for="SectionLabel"
+                              class="text-danger d-block mt-1"></span>
+                    </div>
+
+                    <!-- TITLE -->
+                    <div class="mb-4">
+
+                        <label asp-for="Title"
+                               class="form-label">
+                            Bölüm Başlığı *
+                        </label>
+
+                        <input asp-for="Title"
+                               class="form-control"
+                               maxlength="200"
+                               required
+                               placeholder="Örn: Birlikte Harika İşler Yapalım" />
+
+                        <span asp-validation-for="Title"
+                              class="text-danger d-block mt-1"></span>
+                    </div>
+
+                    <!-- DESCRIPTION -->
+                    <div class="mb-2">
+
+                        <label asp-for="Description"
+                               class="form-label">
+                            Bölüm Açıklaması
+                        </label>
+
+                        <textarea asp-for="Description"
+                                  class="form-control"
+                                  rows="6"
+                                  maxlength="1000"
+                                  placeholder="Ziyaretçilere göstermek istediğiniz iletişim mesajını yazın..."></textarea>
+
+                        <span asp-validation-for="Description"
+                              class="text-danger d-block mt-1"></span>
+
+                        <small class="text-muted d-block mt-2">
+                            Açıklama en fazla 1000 karakter olabilir.
+                            Satır sonları önizlemede korunur.
+                        </small>
+                    </div>
+
+                </div>
+
+                <!-- CONTACT DETAILS -->
+                <div class="contact-card">
+
+                    <div class="contact-card-heading">
+
+                        <div class="contact-card-icon">
+                            <i class="bi bi-person-lines-fill"></i>
+                        </div>
+
+                        <div>
+                            <h5>İletişim Bilgileri</h5>
+
+                            <small>
+                                Ziyaretçilerin sizinle iletişim
+                                kurmak için kullanacağı bilgiler
+                            </small>
+                        </div>
+
+                    </div>
+
+                    <!-- EMAIL -->
+                    <div class="mb-4">
+
+                        <label asp-for="Email"
+                               class="form-label">
+                            E-posta Adresi *
+                        </label>
+
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <i class="bi bi-envelope"></i>
+                            </span>
+
+                            <input asp-for="Email"
+                                   type="email"
+                                   class="form-control"
+                                   maxlength="254"
+                                   required
+                                   placeholder="ornek@eposta.com" />
+                        </div>
+
+                        <span asp-validation-for="Email"
+                              class="text-danger d-block mt-1"></span>
+
+                        <small class="text-muted d-block mt-2">
+                            Ziyaretçilerin görebileceği
+                            iletişim e-posta adresiniz.
+                        </small>
+                    </div>
+
+                    <!-- PHONE -->
+                    <div class="mb-4">
+
+                        <label asp-for="PhoneNumber"
+                               class="form-label">
+                            Telefon Numarası
+                        </label>
+
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <i class="bi bi-telephone"></i>
+                            </span>
+
+                            <input asp-for="PhoneNumber"
+                                   type="tel"
+                                   class="form-control"
+                                   maxlength="30"
+                                   placeholder="+90 5XX XXX XX XX" />
+                        </div>
+
+                        <span asp-validation-for="PhoneNumber"
+                              class="text-danger d-block mt-1"></span>
+                    </div>
+
+                    <!-- LOCATION -->
+                    <div class="mb-2">
+
+                        <label asp-for="Location"
+                               class="form-label">
+                            Konum
+                        </label>
+
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <i class="bi bi-geo-alt"></i>
+                            </span>
+
+                            <input asp-for="Location"
+                                   class="form-control"
+                                   maxlength="150"
+                                   placeholder="Örn: Elazığ, Türkiye" />
+                        </div>
+
+                        <span asp-validation-for="Location"
+                              class="text-danger d-block mt-1"></span>
+                    </div>
+
+                    <!-- ACTIONS -->
+                    <div class="d-flex align-items-center flex-wrap gap-2 mt-4">
+
+                        <button type="submit"
+                                class="save-btn"
+                                id="saveContactButton">
+
+                            <i class="bi bi-check-circle"></i>
+                            Değişiklikleri Kaydet
+                        </button>
+
+                        <button type="reset"
+                                class="btn btn-light px-4 py-2"
+                                id="resetContactButton">
+
+                            <i class="bi bi-arrow-counterclockwise me-1"></i>
+                            Değişiklikleri Geri Al
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- RIGHT COLUMN -->
+            <div class="col-xl-5">
+
+                <!-- LIVE PREVIEW -->
+                <div class="contact-card mb-4">
+
+                    <div class="contact-card-heading">
+
+                        <div class="contact-card-icon">
+                            <i class="bi bi-eye"></i>
+                        </div>
+
+                        <div>
+                            <h5>Canlı Önizleme</h5>
+
+                            <small>
+                                İletişim bölümünün örnek görünümü
+                            </small>
+                        </div>
+
+                    </div>
+
+                    <!-- SECTION PREVIEW -->
+                    <div class="contact-preview mb-4">
+
+                        <div id="previewSectionLabel"
+                             class="preview-eyebrow"></div>
+
+                        <h3 id="previewContactTitle"
+                            class="preview-title"></h3>
+
+                        <p id="previewContactDescription"
+                           class="preview-description mb-0"></p>
+
+                    </div>
+
+                    <h6 class="fw-semibold mb-3">
+                        <i class="bi bi-card-list me-2"></i>
+                        İletişim Kartları
+                    </h6>
+
+                    <!-- EMAIL CARD -->
+                    <div class="info-preview-card">
+
+                        <div class="info-preview-icon">
+                            <i class="bi bi-envelope"></i>
+                        </div>
+
+                        <div class="flex-grow-1" style="min-width:0;">
+
+                            <div class="info-preview-label">
+                                E-posta
+                            </div>
+
+                            <div class="info-preview-value">
+                                <a id="previewEmailLink"
+                                   href="#"
+                                   class="pe-none"
+                                   tabindex="-1"
+                                   aria-disabled="true">
+                                    <span id="previewEmail"></span>
+                                </a>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <!-- PHONE CARD -->
+                    <div class="info-preview-card">
+
+                        <div class="info-preview-icon">
+                            <i class="bi bi-telephone"></i>
+                        </div>
+
+                        <div class="flex-grow-1" style="min-width:0;">
+
+                            <div class="info-preview-label">
+                                Telefon
+                            </div>
+
+                            <div class="info-preview-value">
+                                <a id="previewPhoneLink"
+                                   href="#"
+                                   class="pe-none"
+                                   tabindex="-1"
+                                   aria-disabled="true">
+                                    <span id="previewPhone"></span>
+                                </a>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <!-- LOCATION CARD -->
+                    <div class="info-preview-card mb-0">
+
+                        <div class="info-preview-icon">
+                            <i class="bi bi-geo-alt"></i>
+                        </div>
+
+                        <div class="flex-grow-1" style="min-width:0;">
+
+                            <div class="info-preview-label">
+                                Konum
+                            </div>
+
+                            <div class="info-preview-value"
+                                 id="previewLocation"></div>
+
+                        </div>
+
+                    </div>
+
+                    <div class="note-box mt-4">
+
+                        <i class="bi bi-info-circle me-1"></i>
+
+                        Bu alan yalnızca Admin önizlemesidir.
+                        Gerçek iletişim bölümünün tasarımı
+                        frontend üzerinde görüntülenir.
+
+                    </div>
+
+                </div>
+
+                <!-- INFORMATION -->
+                <div class="contact-card">
+
+                    <div class="contact-card-heading">
+
+                        <div class="contact-card-icon">
+                            <i class="bi bi-shield-check"></i>
+                        </div>
+
+                        <div>
+                            <h5>Bilgilendirme</h5>
+
+                            <small>
+                                İletişim yönetimi hakkında
+                            </small>
+                        </div>
+
+                    </div>
+
+                    <div class="note-box mb-3">
+                        <i class="bi bi-database me-1"></i>
+
+                        Kaydettiğiniz bilgiler SQL Server
+                        veritabanındaki Contact kaydında tutulur.
+                    </div>
+
+                    <div class="note-box mb-3">
+                        <i class="bi bi-envelope-check me-1"></i>
+
+                        Bu ekran yalnızca iletişim bilgilerini
+                        düzenler. Ziyaretçilerden gelen mesajlar
+                        ayrı bir bölümde yönetilir.
+                    </div>
+
+                    <a asp-area="Admin"
+                       asp-controller="Message"
+                       asp-action="MessageList"
+                       class="preview-btn w-100 justify-content-center">
+
+                        <i class="bi bi-inbox"></i>
+                        Gelen Mesajları Görüntüle
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </form>
+
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+
+        // ========== FORM INPUTS ==========
+
+        const sectionLabel =
+            document.getElementById("SectionLabel");
+
+        const title =
+            document.getElementById("Title");
+
+        const description =
+            document.getElementById("Description");
+
+        const email =
+            document.getElementById("Email");
+
+        const phone =
+            document.getElementById("PhoneNumber");
+
+        const location =
+            document.getElementById("Location");
+
+        // ========== PREVIEW ELEMENTS ==========
+
+        const previewSectionLabel =
+            document.getElementById("previewSectionLabel");
+
+        const previewTitle =
+            document.getElementById("previewContactTitle");
+
+        const previewDescription =
+            document.getElementById("previewContactDescription");
+
+        const previewEmail =
+            document.getElementById("previewEmail");
+
+        const previewEmailLink =
+            document.getElementById("previewEmailLink");
+
+        const previewPhone =
+            document.getElementById("previewPhone");
+
+        const previewPhoneLink =
+            document.getElementById("previewPhoneLink");
+
+        const previewLocation =
+            document.getElementById("previewLocation");
+
+        // ========== SAFE LINK HELPERS ==========
+
+        function setPreviewLink(link, value, scheme, valid) {
+
+            if (valid) {
+                link.href = scheme + value;
+                link.classList.remove("pe-none");
+                link.removeAttribute("tabindex");
+                link.removeAttribute("aria-disabled");
+            } else {
+                link.removeAttribute("href");
+                link.classList.add("pe-none");
+                link.setAttribute("tabindex", "-1");
+                link.setAttribute("aria-disabled", "true");
+            }
+        }
+
+        // ========== LIVE PREVIEW ==========
+
+        function updatePreview() {
+
+            const labelValue = sectionLabel.value.trim();
+            const titleValue = title.value.trim();
+            const descriptionValue = description.value.trim();
+
+            const emailValue = email.value.trim();
+            const phoneValue = phone.value.trim();
+            const locationValue = location.value.trim();
+
+            previewSectionLabel.textContent =
+                labelValue || "İLETİŞİM";
+
+            previewTitle.textContent =
+                titleValue || "İletişim Başlığı";
+
+            previewDescription.textContent =
+                descriptionValue || "İletişim açıklaması burada görünecek.";
+
+            previewEmail.textContent =
+                emailValue || "E-posta belirtilmemiş";
+
+            previewPhone.textContent =
+                phoneValue || "Telefon belirtilmemiş";
+
+            previewLocation.textContent =
+                locationValue || "Konum belirtilmemiş";
+
+            // E-posta bağlantısı yalnızca geçerli formatta aktif olur
+            const validEmail =
+                emailValue !== "" &&
+                email.validity.valid &&
+                !email.validity.typeMismatch;
+
+            setPreviewLink(
+                previewEmailLink,
+                emailValue,
+                "mailto:",
+                validEmail
+            );
+
+            // Telefon bağlantısı için yalnızca uygun karakterlere izin ver
+            const validPhone =
+                phoneValue !== "" &&
+                /^[+0-9()\s-]{5,30}$/.test(phoneValue);
+
+            const phoneHref = phoneValue.replace(/[()\s-]/g, "");
+
+            setPreviewLink(
+                previewPhoneLink,
+                phoneHref,
+                "tel:",
+                validPhone
+            );
+        }
+
+        // ========== INPUT EVENTS ==========
+
+        [
+            sectionLabel,
+            title,
+            description,
+            email,
+            phone,
+            location
+        ].forEach(function (input) {
+
+            input.addEventListener("input", updatePreview);
+        });
+
+        // ========== RESET ==========
+
+        const form = document.getElementById("editContactForm");
+
+        form.addEventListener("reset", function () {
+
+            // Tarayıcı input değerlerini sıfırladıktan sonra önizleme yenilenir
+            requestAnimationFrame(updatePreview);
+        });
+
+        // ========== SUBMIT ==========
+
+        const saveButton = document.getElementById("saveContactButton");
+
+        form.addEventListener("submit", function () {
+
+            if (!form.checkValidity()) {
+                return;
+            }
+
+            saveButton.disabled = true;
+
+            saveButton.innerHTML =
+                '<span class="spinner-border spinner-border-sm me-2"></span>' +
+                'Kaydediliyor...';
+        });
+
+        // ========== INITIAL PREVIEW ==========
+
+        updatePreview();
+
+    });
+</script>

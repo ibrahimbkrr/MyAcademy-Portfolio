@@ -1,0 +1,438 @@
+﻿@model MyAcademy_PortfolioProject.Areas.Admin.Models.SocialMediaFormViewModel
+
+@{
+    ViewData["Title"] = "Sosyal Medya Hesabı Güncelle";
+    Layout = "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
+}
+
+<style>
+    .social-form {
+        --social-green: #2f5d4e;
+        --social-soft: #e7efe9;
+        --social-border: #ebe8e1;
+    }
+
+        .social-form .form-card {
+            background: #fff;
+            border: 1px solid var(--social-border);
+            border-radius: 16px;
+            padding: 28px;
+            box-shadow: 0 2px 12px rgba(0,0,0,.04);
+            height: 100%;
+        }
+
+        .social-form .card-heading {
+            display: flex;
+            gap: 14px;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .social-form .card-icon {
+            width: 48px;
+            height: 48px;
+            display: grid;
+            place-items: center;
+            flex-shrink: 0;
+            background: var(--social-soft);
+            color: var(--social-green);
+            border-radius: 12px;
+            font-size: 1.3rem;
+        }
+
+        .social-form .form-label {
+            font-size: .89rem;
+            font-weight: 600;
+            color: #555;
+            margin-bottom: 8px;
+        }
+
+        .social-form .form-control,
+        .social-form .form-select {
+            background: #fcfbf9;
+            border: 1px solid var(--social-border);
+            padding: 12px 14px;
+            border-radius: 10px;
+        }
+
+            .social-form .form-control:focus,
+            .social-form .form-select:focus {
+                border-color: var(--social-green);
+                box-shadow: 0 0 0 .2rem rgba(47,93,78,.12);
+            }
+
+        .social-form .switch-box {
+            background: #fcfbf9;
+            border: 1px solid var(--social-border);
+            border-radius: 12px;
+            padding: 18px;
+        }
+
+        .social-form .form-check-input:checked {
+            background-color: var(--social-green);
+            border-color: var(--social-green);
+        }
+
+        .social-form .save-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--social-green);
+            border: 0;
+            border-radius: 10px;
+            padding: 12px 22px;
+            color: #fff;
+            font-weight: 600;
+        }
+
+            .social-form .save-btn:hover {
+                background: #244a3e;
+            }
+
+        .social-form .preview-box {
+            background: #f8faf7;
+            border: 1px solid var(--social-border);
+            border-radius: 14px;
+            padding: 28px 20px;
+            text-align: center;
+        }
+
+        .social-form .preview-icon {
+            display: grid;
+            place-items: center;
+            width: 86px;
+            height: 86px;
+            border-radius: 22px;
+            background: var(--social-soft);
+            color: var(--social-green);
+            font-size: 2.8rem;
+            margin: 0 auto 18px;
+        }
+
+        .social-form .preview-url {
+            overflow-wrap: anywhere;
+            color: #777;
+            font-size: .87rem;
+        }
+
+        .social-form .info-box {
+            background: #f7faf8;
+            border: 1px solid #dce9e0;
+            border-radius: 10px;
+            padding: 15px;
+            color: #557366;
+            font-size: .85rem;
+        }
+
+    @@media(max-width: 767px) {
+        .social-form .form-card {
+            padding: 20px;
+        }
+    }
+</style>
+
+<div class="social-form container-fluid py-4">
+
+    <!-- HEADER -->
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
+        <div>
+            <h4 class="mb-1">Sosyal Medya Hesabı Güncelle</h4>
+            <p class="text-muted mb-0">
+                Mevcut sosyal medya hesabınızın bilgilerini düzenleyin.
+            </p>
+        </div>
+
+        <a asp-area="Admin"
+           asp-controller="SocialMedia"
+           asp-action="SocialMediaList"
+           class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left me-1"></i>
+            Hesap Listesine Dön
+        </a>
+    </div>
+
+    <form asp-area="Admin"
+          asp-controller="SocialMedia"
+          asp-action="UpdateSocialMedia"
+          method="post"
+          id="updateSocialMediaForm">
+
+        @Html.AntiForgeryToken()
+        <input asp-for="SocialMediaId" type="hidden" />
+
+        <div asp-validation-summary="ModelOnly"
+             class="text-danger mb-3"></div>
+
+        <div class="row g-4">
+
+            <!-- FORM -->
+            <div class="col-lg-7">
+                <div class="form-card">
+
+                    <div class="card-heading">
+                        <div class="card-icon">
+                            <i class="bi bi-pencil-square"></i>
+                        </div>
+                        <div>
+                            <h5 class="mb-1">Hesap Bilgileri</h5>
+                            <small class="text-muted">
+                                #@Model.SocialMediaId numaralı hesap düzenleniyor.
+                            </small>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label asp-for="Platform" class="form-label">
+                            Platform Adı *
+                        </label>
+
+                        <input asp-for="Platform"
+                               class="form-control"
+                               maxlength="50"
+                               required
+                               placeholder="Örn: LinkedIn" />
+
+                        <span asp-validation-for="Platform"
+                              class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-4">
+                        <label asp-for="Url" class="form-label">
+                            Profil Bağlantısı *
+                        </label>
+
+                        <input asp-for="Url"
+                               type="url"
+                               class="form-control"
+                               maxlength="2048"
+                               required
+                               placeholder="https://www.linkedin.com/in/kullanici" />
+
+                        <span asp-validation-for="Url"
+                              class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="socialIconPreset" class="form-label">
+                            Hazır İkon Seçimi
+                        </label>
+
+                        <select id="socialIconPreset"
+                                class="form-select">
+                            <option value="">Özel ikon / Seçiniz</option>
+                            <option value="bi bi-github">GitHub</option>
+                            <option value="bi bi-linkedin">LinkedIn</option>
+                            <option value="bi bi-instagram">Instagram</option>
+                            <option value="bi bi-youtube">YouTube</option>
+                            <option value="bi bi-twitter-x">X (Twitter)</option>
+                            <option value="bi bi-facebook">Facebook</option>
+                            <option value="bi bi-globe">Web Sitesi</option>
+                            <option value="bi bi-envelope">E-posta</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-4">
+                        <label asp-for="IconClass" class="form-label">
+                            İkon CSS Sınıfı
+                        </label>
+
+                        <input asp-for="IconClass"
+                               class="form-control"
+                               maxlength="50"
+                               placeholder="Örn: bi bi-linkedin" />
+
+                        <span asp-validation-for="IconClass"
+                              class="text-danger small"></span>
+
+                        <small class="text-muted d-block mt-2">
+                            Mevcut ikonu değiştirmek için yeni sınıf seçin.
+                        </small>
+                    </div>
+
+                    <div class="mb-4">
+                        <label asp-for="DisplayOrder" class="form-label">
+                            Gösterim Sırası
+                        </label>
+
+                        <input asp-for="DisplayOrder"
+                               type="number"
+                               min="0"
+                               class="form-control" />
+
+                        <span asp-validation-for="DisplayOrder"
+                              class="text-danger small"></span>
+                    </div>
+
+                    <div class="switch-box mb-4">
+                        <div class="form-check form-switch">
+
+                            <input asp-for="IsActive"
+                                   class="form-check-input"
+                                   role="switch" />
+
+                            <label asp-for="IsActive"
+                                   class="form-check-label fw-semibold">
+                                Hesap Aktif Olsun
+                            </label>
+                        </div>
+
+                        <small id="socialStatusText"
+                               class="text-muted d-block mt-2"></small>
+                    </div>
+
+                    <div class="d-flex flex-wrap gap-2">
+                        <button type="submit"
+                                id="updateSocialButton"
+                                class="save-btn">
+
+                            <i class="bi bi-check-circle"></i>
+                            Değişiklikleri Kaydet
+                        </button>
+
+                        <a asp-area="Admin"
+                           asp-controller="SocialMedia"
+                           asp-action="SocialMediaList"
+                           class="btn btn-light px-4 py-2">
+                            Vazgeç
+                        </a>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- PREVIEW -->
+            <div class="col-lg-5">
+                <div class="form-card">
+
+                    <h5 class="mb-2">
+                        <i class="bi bi-eye me-2"></i>
+                        Hesap Önizlemesi
+                    </h5>
+
+                    <p class="text-muted small mb-4">
+                        Kaydetmeden önce bilgilerinizi kontrol edin.
+                    </p>
+
+                    <div class="preview-box">
+
+                        <div class="preview-icon">
+                            <i id="socialPreviewIcon"
+                               class="bi bi-link-45deg"></i>
+                        </div>
+
+                        <h5 id="socialPreviewPlatform"
+                            class="fw-bold"></h5>
+
+                        <p id="socialPreviewUrl"
+                           class="preview-url mb-3"></p>
+
+                        <span id="socialPreviewStatus"
+                              class="badge"></span>
+
+                    </div>
+
+                    <div class="info-box mt-4">
+                        <i class="bi bi-info-circle me-1"></i>
+                        Değişiklikleri kaydettikten sonra aktif
+                        hesaplar frontend sosyal medya alanlarında
+                        kullanılabilir.
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </form>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+
+        const platform = document.getElementById("Platform");
+        const url = document.getElementById("Url");
+        const iconClass = document.getElementById("IconClass");
+        const preset = document.getElementById("socialIconPreset");
+        const active = document.getElementById("IsActive");
+
+        const previewPlatform =
+            document.getElementById("socialPreviewPlatform");
+
+        const previewUrl =
+            document.getElementById("socialPreviewUrl");
+
+        const previewIcon =
+            document.getElementById("socialPreviewIcon");
+
+        const previewStatus =
+            document.getElementById("socialPreviewStatus");
+
+        const statusText =
+            document.getElementById("socialStatusText");
+
+        function updatePreview() {
+
+            previewPlatform.textContent =
+                platform.value.trim() || "Platform Adı";
+
+            previewUrl.textContent =
+                url.value.trim() || "Profil bağlantısı";
+
+            const iconValue = iconClass.value.trim();
+            const validIcon = /^bi bi-[a-z0-9-]+$/.test(iconValue);
+
+            previewIcon.className = validIcon
+                ? iconValue
+                : "bi bi-link-45deg";
+
+            previewStatus.textContent =
+                active.checked ? "Aktif" : "Pasif";
+
+            previewStatus.classList.toggle(
+                "bg-success", active.checked);
+
+            previewStatus.classList.toggle(
+                "bg-secondary", !active.checked);
+
+            statusText.textContent = active.checked
+                ? "Hesap ana sayfada gösterilecek."
+                : "Hesap ana sayfada gizlenecek.";
+        }
+
+        preset.addEventListener("change", function () {
+            if (this.value) {
+                iconClass.value = this.value;
+            }
+            updatePreview();
+        });
+
+        [platform, url, iconClass].forEach(function (input) {
+            input.addEventListener("input", updatePreview);
+        });
+
+        active.addEventListener("change", updatePreview);
+
+        // Kayıtlı ikon bir hazır seçenekse dropdown'da seçili göster
+        const currentOption = Array.from(preset.options)
+            .find(option =>
+                option.value === iconClass.value.trim());
+
+        if (currentOption) {
+            preset.value = currentOption.value;
+        }
+
+        updatePreview();
+
+        const form = document.getElementById("updateSocialMediaForm");
+        const saveButton = document.getElementById("updateSocialButton");
+
+        form.addEventListener("submit", function () {
+            if (!form.checkValidity()) return;
+
+            saveButton.disabled = true;
+            saveButton.innerHTML =
+                '<span class="spinner-border spinner-border-sm me-2"></span>' +
+                'Güncelleniyor...';
+        });
+
+    });
+</script>

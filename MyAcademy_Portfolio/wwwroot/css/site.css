@@ -1,0 +1,102 @@
+html {
+  font-size: 14px;
+}
+
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+  margin-bottom: 60px;
+}
+
+.form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
+  color: var(--bs-secondary-color);
+  text-align: end;
+}
+
+.form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
+  text-align: start;
+}
+
+/* About Section - Technology Statistics */
+#about .about-tech-value {
+    font-size: clamp(1.2rem, 2vw, 1.9rem);
+    font-weight: 700;
+    line-height: 1.3;
+    overflow-wrap: anywhere;
+}
+
+#about .stat-label {
+    font-size: 0.85rem;
+    line-height: 1.5;
+    margin-top: 6px;
+}
+
+#about .row > .col-4 {
+    min-width: 0;
+}
+
+/* Skills - Level Indicators */
+
+#skills .skill-level-item {
+    width: 100%;
+}
+
+#skills .skill-progress {
+    height: 6px;
+    border-radius: 10px;
+    background-color: #e8ebe8;
+    overflow: hidden;
+}
+
+    #skills .skill-progress .progress-bar {
+        background-color: var(--accent-sage, #91aa9b);
+        border-radius: 10px;
+    }
+
+#skills .skill-card {
+    height: 100%;
+}
+
+#skills .tech-badge {
+    font-size: 0.82rem;
+    font-weight: 500;
+}
+
+#skills .skill-level-item {
+    margin-bottom: 3px;
+}
+
+#skills .skill-card {
+    padding: 26px;
+}
+
+#skills .skill-progress .progress-bar {
+    background: #91aa9b !important;
+    background-color: #91aa9b !important;
+}
+
+#skills .skill-card {
+    padding: 24px;
+    height: 100%;
+}
+
+#skills .skill-level-item {
+    margin-bottom: 0;
+}
+
+#skills .skill-progress {
+    height: 6px;
+}

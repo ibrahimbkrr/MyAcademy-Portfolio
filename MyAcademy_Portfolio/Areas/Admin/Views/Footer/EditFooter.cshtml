@@ -1,0 +1,509 @@
+﻿@model MyAcademy_PortfolioProject.Areas.Admin.Models.FooterFormViewModel
+
+@{
+    ViewData["Title"] = "Footer Yönetimi";
+    Layout = "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
+}
+
+<style>
+    .footer-admin {
+        --footer-primary: #2f5d4e;
+        --footer-soft: #e7efe9;
+        --footer-border: #ebe8e1;
+    }
+
+        .footer-admin .footer-card {
+            background: #fff;
+            border: 1px solid var(--footer-border);
+            border-radius: 16px;
+            padding: 28px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, .04);
+            height: 100%;
+        }
+
+        .footer-admin .footer-card-heading {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 25px;
+        }
+
+        .footer-admin .footer-card-icon {
+            display: grid;
+            place-items: center;
+            width: 48px;
+            height: 48px;
+            flex-shrink: 0;
+            background: var(--footer-soft);
+            color: var(--footer-primary);
+            border-radius: 12px;
+            font-size: 1.35rem;
+        }
+
+        .footer-admin .footer-card-heading h5 {
+            margin: 0 0 4px;
+            font-weight: 600;
+        }
+
+        .footer-admin .footer-card-heading small {
+            color: #888;
+        }
+
+        .footer-admin .form-label {
+            font-size: .89rem;
+            font-weight: 600;
+            color: #555;
+            margin-bottom: 8px;
+        }
+
+        .footer-admin .form-control {
+            background: #fcfbf9;
+            border: 1px solid var(--footer-border);
+            padding: 12px 14px;
+            border-radius: 10px;
+        }
+
+            .footer-admin .form-control:focus {
+                background: #fff;
+                border-color: var(--footer-primary);
+                box-shadow: 0 0 0 .2rem rgba(47, 93, 78, .12);
+            }
+
+        .footer-admin textarea {
+            resize: vertical;
+            min-height: 115px;
+        }
+
+        .footer-admin .save-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            background: var(--footer-primary);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 12px 22px;
+            font-weight: 600;
+        }
+
+            .footer-admin .save-btn:hover {
+                background: #244a3e;
+                color: white;
+            }
+
+            .footer-admin .save-btn:disabled {
+                opacity: .7;
+                cursor: not-allowed;
+            }
+
+        .footer-admin .footer-preview {
+            background: #172b25;
+            border-radius: 14px;
+            padding: 28px 24px;
+            color: white;
+        }
+
+        .footer-admin .preview-brand {
+            color: #fff;
+            font-size: 1.6rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            overflow-wrap: anywhere;
+        }
+
+        .footer-admin .preview-description {
+            color: #c6d2cb;
+            font-size: .92rem;
+            line-height: 1.8;
+            margin-bottom: 25px;
+            white-space: pre-wrap;
+            overflow-wrap: anywhere;
+        }
+
+        .footer-admin .preview-divider {
+            height: 1px;
+            background: rgba(255,255,255,.15);
+            margin: 20px 0;
+        }
+
+        .footer-admin .preview-copyright {
+            color: #aabbb0;
+            font-size: .82rem;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            overflow-wrap: anywhere;
+        }
+
+        .footer-admin .note-box {
+            background: #f7faf8;
+            border: 1px solid #dce9e0;
+            border-radius: 11px;
+            padding: 15px;
+            color: #557366;
+            font-size: .85rem;
+            line-height: 1.7;
+        }
+
+        .footer-admin .counter {
+            color: #888;
+            font-size: .78rem;
+        }
+
+    @@media (max-width: 767px) {
+        .footer-admin .footer-card {
+            padding: 18px;
+        }
+
+        .footer-admin .footer-preview {
+            padding: 20px;
+        }
+    }
+</style>
+
+<div class="footer-admin container-fluid py-4">
+
+    <!-- PAGE HEADER -->
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
+
+        <div>
+            <h4 class="mb-1">Footer Yönetimi</h4>
+            <p class="text-muted mb-0">
+                Portfolyonuzun alt bilgi bölümündeki
+                marka ve açıklama metinlerini düzenleyin.
+            </p>
+        </div>
+
+        <a asp-area=""
+           asp-controller="Default"
+           asp-action="Index"
+           target="_blank"
+           rel="noopener noreferrer"
+           class="btn btn-outline-secondary">
+
+            <i class="bi bi-box-arrow-up-right me-1"></i>
+            Siteyi Önizle
+        </a>
+
+    </div>
+
+    <!-- SUCCESS MESSAGE -->
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show"
+             role="alert">
+
+            <i class="bi bi-check-circle-fill me-2"></i>
+            @TempData["SuccessMessage"]
+
+            <button type="button"
+                    class="btn-close"
+                    data-bs-dismiss="alert"
+                    aria-label="Kapat"></button>
+        </div>
+    }
+
+    <!-- FOOTER FORM -->
+    <form asp-area="Admin"
+          asp-controller="Footer"
+          asp-action="EditFooter"
+          method="post"
+          id="editFooterForm">
+
+        @Html.AntiForgeryToken()
+
+        <input asp-for="FooterId" type="hidden" />
+
+        <div asp-validation-summary="ModelOnly"
+             class="text-danger mb-3"></div>
+
+        <div class="row g-4">
+
+            <!-- LEFT COLUMN -->
+            <div class="col-lg-7">
+
+                <div class="footer-card">
+
+                    <div class="footer-card-heading">
+
+                        <div class="footer-card-icon">
+                            <i class="bi bi-layout-text-window"></i>
+                        </div>
+
+                        <div>
+                            <h5>Footer Bilgileri</h5>
+                            <small>
+                                Portfolyonuzun alt bölümünde
+                                kullanılan genel metinler
+                            </small>
+                        </div>
+
+                    </div>
+
+                    <!-- BRAND NAME -->
+                    <div class="mb-4">
+
+                        <label asp-for="BrandName"
+                               class="form-label">
+                            Marka / İsim *
+                        </label>
+
+                        <input asp-for="BrandName"
+                               class="form-control"
+                               maxlength="100"
+                               required
+                               placeholder="Örn: İbrahim Bakar" />
+
+                        <span asp-validation-for="BrandName"
+                              class="text-danger small d-block mt-1"></span>
+
+                        <small class="text-muted d-block mt-2">
+                            Footer'ın marka veya isim alanında gösterilir.
+                        </small>
+
+                    </div>
+
+                    <!-- DESCRIPTION -->
+                    <div class="mb-4">
+
+                        <label asp-for="Description"
+                               class="form-label">
+                            Footer Açıklaması
+                        </label>
+
+                        <textarea asp-for="Description"
+                                  class="form-control"
+                                  rows="5"
+                                  maxlength="250"
+                                  placeholder="Kısa bir tanıtım metni yazın..."></textarea>
+
+                        <span asp-validation-for="Description"
+                              class="text-danger small d-block mt-1"></span>
+
+                        <div class="d-flex justify-content-between mt-2">
+                            <small class="text-muted">
+                                Kısa bir açıklama kullanabilirsiniz.
+                            </small>
+
+                            <small class="counter"
+                                   id="descriptionCounter"></small>
+                        </div>
+
+                    </div>
+
+                    <!-- COPYRIGHT -->
+                    <div class="mb-4">
+
+                        <label asp-for="CopyrightText"
+                               class="form-label">
+                            Telif Hakkı Metni
+                        </label>
+
+                        <textarea asp-for="CopyrightText"
+                                  class="form-control"
+                                  rows="3"
+                                  maxlength="250"
+                                  placeholder="Örn: © 2026 İbrahim Bakar. Tüm hakları saklıdır."></textarea>
+
+                        <span asp-validation-for="CopyrightText"
+                              class="text-danger small d-block mt-1"></span>
+
+                        <div class="d-flex justify-content-between mt-2">
+                            <small class="text-muted">
+                                Metni istediğiniz şekilde düzenleyebilirsiniz.
+                            </small>
+
+                            <small class="counter"
+                                   id="copyrightCounter"></small>
+                        </div>
+
+                    </div>
+
+                    <!-- ACTIONS -->
+                    <div class="d-flex flex-wrap gap-2">
+
+                        <button type="submit"
+                                class="save-btn"
+                                id="saveFooterButton">
+
+                            <i class="bi bi-check-circle"></i>
+                            Değişiklikleri Kaydet
+                        </button>
+
+                        <button type="reset"
+                                class="btn btn-light px-4 py-2">
+
+                            <i class="bi bi-arrow-counterclockwise me-1"></i>
+                            Geri Al
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- RIGHT COLUMN -->
+            <div class="col-lg-5">
+
+                <div class="footer-card">
+
+                    <div class="footer-card-heading">
+
+                        <div class="footer-card-icon">
+                            <i class="bi bi-eye"></i>
+                        </div>
+
+                        <div>
+                            <h5>Canlı Önizleme</h5>
+                            <small>
+                                Footer metinlerinin örnek görünümü
+                            </small>
+                        </div>
+
+                    </div>
+
+                    <!-- FOOTER PREVIEW -->
+                    <div class="footer-preview">
+
+                        <div class="mb-4">
+                            <i class="bi bi-code-slash fs-3"></i>
+                        </div>
+
+                        <h3 id="previewBrandName"
+                            class="preview-brand"></h3>
+
+                        <p id="previewDescription"
+                           class="preview-description"></p>
+
+                        <div class="preview-divider"></div>
+
+                        <div id="previewCopyright"
+                             class="preview-copyright"></div>
+
+                    </div>
+
+                    <div class="note-box mt-4">
+
+                        <i class="bi bi-info-circle me-1"></i>
+
+                        Bu önizleme Admin paneline özeldir.
+                        Gerçek Footer tasarımınız frontend
+                        üzerinde görüntülenir.
+
+                        Değişiklikler kaydedilene kadar
+                        veritabanındaki içerikler değişmez.
+                    </div>
+
+                    <div class="note-box mt-3">
+
+                        <i class="bi bi-share me-1"></i>
+
+                        Sosyal medya bağlantılarını
+                        Sosyal Medya Yönetimi ekranından
+                        düzenleyebilirsiniz.
+
+                    </div>
+
+                    <a asp-area="Admin"
+                       asp-controller="SocialMedia"
+                       asp-action="SocialMediaList"
+                       class="btn btn-outline-secondary w-100 mt-3">
+
+                        <i class="bi bi-share me-1"></i>
+                        Sosyal Medya Yönetimi
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+    </form>
+
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+
+        // FORM
+        const form = document.getElementById("editFooterForm");
+
+        const brandName = document.getElementById("BrandName");
+        const description = document.getElementById("Description");
+        const copyrightText = document.getElementById("CopyrightText");
+
+        // PREVIEW
+        const previewBrandName =
+            document.getElementById("previewBrandName");
+
+        const previewDescription =
+            document.getElementById("previewDescription");
+
+        const previewCopyright =
+            document.getElementById("previewCopyright");
+
+        // COUNTERS
+        const descriptionCounter =
+            document.getElementById("descriptionCounter");
+
+        const copyrightCounter =
+            document.getElementById("copyrightCounter");
+
+        // SAVE BUTTON
+        const saveButton =
+            document.getElementById("saveFooterButton");
+
+        function updatePreview() {
+
+            previewBrandName.textContent =
+                brandName.value.trim() || "Marka / İsim";
+
+            previewDescription.textContent =
+                description.value.trim() ||
+                "Footer açıklaması burada görünecek.";
+
+            previewCopyright.textContent =
+                copyrightText.value.trim() ||
+                "Telif hakkı metni burada görünecek.";
+
+            descriptionCounter.textContent =
+                description.value.length + " / 250";
+
+            copyrightCounter.textContent =
+                copyrightText.value.length + " / 250";
+        }
+
+        // Her metin değiştiğinde önizlemeyi güncelle
+        [
+            brandName,
+            description,
+            copyrightText
+        ].forEach(function (input) {
+            input.addEventListener("input", updatePreview);
+        });
+
+        // Geri al butonundan sonra önizlemeyi güncelle
+        form.addEventListener("reset", function () {
+            requestAnimationFrame(updatePreview);
+        });
+
+        // Kayıt işlemi
+        form.addEventListener("submit", function () {
+
+            if (!form.checkValidity()) {
+                return;
+            }
+
+            saveButton.disabled = true;
+
+            saveButton.innerHTML =
+                '<span class="spinner-border spinner-border-sm me-2"></span>' +
+                'Kaydediliyor...';
+        });
+
+        // Sayfa ilk açıldığında mevcut değerleri göster
+        updatePreview();
+
+    });
+</script>

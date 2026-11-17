@@ -1,0 +1,440 @@
+﻿@model MyAcademy_PortfolioProject.Areas.Admin.Models.ExperienceFormViewModel
+
+@{
+    ViewData["Title"] = "Deneyim Güncelle";
+    Layout = "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
+}
+
+<style>
+    .exp-form {
+        --exp-green: #2f5d4e;
+        --exp-green-soft: #e7efe9;
+        --exp-border: #ebe8e1;
+        --exp-muted: #8a8a85;
+    }
+
+    .exp-form-card {
+        background: #fff;
+        border: 1px solid var(--exp-border);
+        border-radius: 16px;
+        padding: 1.75rem;
+        box-shadow: 0 2px 12px rgba(0,0,0,.04);
+        height: 100%;
+    }
+
+    .exp-form-heading {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        margin-bottom: 24px;
+    }
+
+    .exp-form-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 12px;
+        background: var(--exp-green-soft);
+        color: var(--exp-green);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.4rem;
+    }
+
+    .exp-form-heading h5 {
+        margin: 0 0 4px;
+        font-weight: 600;
+    }
+
+    .exp-form-heading small {
+        color: var(--exp-muted);
+    }
+
+    .exp-form .form-label {
+        font-size: .88rem;
+        font-weight: 600;
+        color: #555;
+        margin-bottom: 8px;
+    }
+
+    .exp-form .form-control,
+    .exp-form .form-select {
+        background: #fcfbf9;
+        border: 1px solid var(--exp-border);
+        border-radius: 10px;
+        padding: 12px 14px;
+    }
+
+        .exp-form .form-control:focus,
+        .exp-form .form-select:focus {
+            border-color: var(--exp-green);
+            background: #fff;
+            box-shadow: 0 0 0 .2rem rgba(47,93,78,.12);
+        }
+
+    .exp-form textarea {
+        min-height: 180px;
+        resize: vertical;
+    }
+
+    .exp-section-label {
+        font-size: .75rem;
+        font-weight: 700;
+        letter-spacing: .08em;
+        text-transform: uppercase;
+        color: #92928c;
+        margin-bottom: 16px;
+    }
+
+    .exp-toggle-box {
+        background: #fcfbf9;
+        border: 1px solid var(--exp-border);
+        border-radius: 12px;
+        padding: 16px;
+    }
+
+        .exp-toggle-box .form-check-input {
+            width: 2.5em;
+            height: 1.3em;
+            cursor: pointer;
+        }
+
+            .exp-toggle-box .form-check-input:checked {
+                background-color: var(--exp-green);
+                border-color: var(--exp-green);
+            }
+
+    .exp-submit-btn {
+        background: var(--exp-green);
+        color: white;
+        border: none;
+        border-radius: 10px;
+        padding: 12px 22px;
+        font-weight: 600;
+    }
+
+        .exp-submit-btn:hover {
+            background: #244a3e;
+            color: #fff;
+        }
+
+    .exp-cancel-btn {
+        display: inline-block;
+        text-decoration: none;
+        color: #555;
+        background: white;
+        border: 1px solid var(--exp-border);
+        border-radius: 10px;
+        padding: 12px 22px;
+    }
+
+        .exp-cancel-btn:hover {
+            background: #f5f3ee;
+            color: #333;
+        }
+
+    .exp-form .field-validation-error {
+        display: block;
+        margin-top: 6px;
+        font-size: .82rem;
+    }
+</style>
+
+<div class="exp-form container-fluid py-4">
+
+    <!-- HEADER -->
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
+        <div>
+            <h4 class="mb-1">Deneyim Güncelle</h4>
+            <p class="text-muted mb-0">
+                Mevcut deneyimin bilgilerini düzenleyebilirsiniz.
+            </p>
+        </div>
+
+        <a asp-area="Admin"
+           asp-controller="Experience"
+           asp-action="ExperienceList"
+           class="exp-cancel-btn">
+            <i class="bi bi-arrow-left me-1"></i>
+            Deneyim Listesine Dön
+        </a>
+    </div>
+
+    <form asp-area="Admin"
+          asp-controller="Experience"
+          asp-action="UpdateExperience"
+          method="post"
+          id="experienceUpdateForm">
+
+        @Html.AntiForgeryToken()
+
+        <input asp-for="ExperienceId" type="hidden" />
+
+        <div asp-validation-summary="ModelOnly"
+             class="text-danger mb-3"></div>
+
+        <div class="row g-4">
+
+            <!-- LEFT COLUMN -->
+            <div class="col-lg-8">
+
+                <div class="exp-form-card">
+
+                    <div class="exp-form-heading">
+
+                        <div class="exp-form-icon">
+                            <i class="bi bi-pencil-square"></i>
+                        </div>
+
+                        <div>
+                            <h5>Deneyim Bilgileri</h5>
+                            <small>
+                                #@Model.ExperienceId numaralı deneyimi düzenliyorsunuz.
+                            </small>
+                        </div>
+
+                    </div>
+
+                    <!-- TITLE -->
+                    <div class="mb-4">
+
+                        <label asp-for="Title" class="form-label">
+                            Deneyim Başlığı *
+                        </label>
+
+                        <input asp-for="Title"
+                               class="form-control"
+                               maxlength="150"
+                               required />
+
+                        <span asp-validation-for="Title"
+                              class="text-danger"></span>
+                    </div>
+
+                    <!-- COMPANY -->
+                    <div class="mb-4">
+
+                        <label asp-for="CompanyName" class="form-label">
+                            Şirket / Kurum Adı *
+                        </label>
+
+                        <input asp-for="CompanyName"
+                               class="form-control"
+                               maxlength="150"
+                               required />
+
+                        <span asp-validation-for="CompanyName"
+                              class="text-danger"></span>
+                    </div>
+
+                    <!-- CATEGORY -->
+                    <div class="mb-4">
+
+                        <label asp-for="CategoryName" class="form-label">
+                            Çalışma Türü *
+                        </label>
+
+                        <select asp-for="CategoryName"
+                                class="form-select"
+                                required>
+
+                            <option value="">Çalışma türü seçiniz</option>
+                            <option value="Tam Zamanlı">Tam Zamanlı</option>
+                            <option value="Yarı Zamanlı">Yarı Zamanlı</option>
+                            <option value="Hibrit">Hibrit</option>
+                            <option value="Uzaktan">Uzaktan</option>
+                            <option value="Stajyer">Stajyer</option>
+                            <option value="Freelance">Freelance</option>
+                            <option value="Proje Bazlı">Proje Bazlı</option>
+
+                        </select>
+
+                        <span asp-validation-for="CategoryName"
+                              class="text-danger"></span>
+                    </div>
+
+                    <!-- DESCRIPTION -->
+                    <div class="mb-3">
+
+                        <label asp-for="Description" class="form-label">
+                            Açıklama / Görev Kapsamı *
+                        </label>
+
+                        <textarea asp-for="Description"
+                                  class="form-control"
+                                  maxlength="2000"
+                                  rows="7"
+                                  required></textarea>
+
+                        <span asp-validation-for="Description"
+                              class="text-danger"></span>
+
+                        <small class="text-muted d-block mt-2">
+                            En fazla 2000 karakter.
+                        </small>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- RIGHT COLUMN -->
+            <div class="col-lg-4">
+
+                <div class="exp-form-card">
+
+                    <div class="exp-section-label">
+                        Çalışma Tarihleri
+                    </div>
+
+                    <!-- START DATE -->
+                    <div class="mb-4">
+
+                        <label asp-for="StartDate" class="form-label">
+                            Başlangıç Tarihi
+                        </label>
+
+                        <input asp-for="StartDate"
+                               type="date"
+                               asp-format="{0:yyyy-MM-dd}"
+                               class="form-control" />
+
+                        <span asp-validation-for="StartDate"
+                              class="text-danger"></span>
+                    </div>
+
+                    <!-- END DATE -->
+                    <div class="mb-4">
+
+                        <label asp-for="EndDate" class="form-label">
+                            Bitiş Tarihi
+                        </label>
+
+                        <input asp-for="EndDate"
+                               type="date"
+                               asp-format="{0:yyyy-MM-dd}"
+                               class="form-control" />
+
+                        <span asp-validation-for="EndDate"
+                              class="text-danger"></span>
+                    </div>
+
+                    <!-- CURRENT STATUS -->
+                    <div class="exp-toggle-box mb-4">
+
+                        <div class="form-check form-switch m-0">
+
+                            <input asp-for="IsCurrent"
+                                   class="form-check-input"
+                                   role="switch" />
+
+                            <label asp-for="IsCurrent"
+                                   class="form-check-label ms-2 fw-semibold">
+                                Devam Ediyor
+                            </label>
+
+                        </div>
+
+                        <small class="text-muted d-block mt-2">
+                            Deneyim halen devam ediyorsa bu seçeneği işaretleyin.
+                        </small>
+                    </div>
+
+                    <hr />
+
+                    <!-- STATUS -->
+                    <div class="exp-section-label mt-4">
+                        Yayın Durumu
+                    </div>
+
+                    <div class="exp-toggle-box">
+
+                        <div class="form-check form-switch m-0">
+
+                            <input asp-for="IsActive"
+                                   class="form-check-input"
+                                   role="switch" />
+
+                            <label asp-for="IsActive"
+                                   class="form-check-label ms-2 fw-semibold">
+                                Portfolyoda Göster
+                            </label>
+
+                        </div>
+
+                        <small id="activeStatusText"
+                               class="text-muted d-block mt-2">
+                            @(Model.IsActive
+                                                        ? "Deneyim ziyaretçilere gösterilecek."
+                                                        : "Deneyim ziyaretçilerden gizlenecek.")
+                        </small>
+                    </div>
+
+                    <!-- BUTTONS -->
+                    <div class="d-grid gap-2 mt-4">
+
+                        <button type="submit"
+                                class="exp-submit-btn"
+                                id="updateExperienceButton">
+
+                            <i class="bi bi-check-circle me-1"></i>
+                            Değişiklikleri Kaydet
+                        </button>
+
+                        <a asp-area="Admin"
+                           asp-controller="Experience"
+                           asp-action="ExperienceList"
+                           class="exp-cancel-btn text-center">
+                            Vazgeç
+                        </a>
+
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </form>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+
+        const form = document.getElementById("experienceUpdateForm");
+        const currentSwitch = document.getElementById("IsCurrent");
+        const endDateInput = document.getElementById("EndDate");
+        const activeSwitch = document.getElementById("IsActive");
+        const activeStatusText = document.getElementById("activeStatusText");
+        const saveButton = document.getElementById("updateExperienceButton");
+
+        function toggleEndDate() {
+            if (currentSwitch.checked) {
+                endDateInput.value = "";
+                endDateInput.disabled = true;
+            } else {
+                endDateInput.disabled = false;
+            }
+        }
+
+        function updateActiveText() {
+            activeStatusText.textContent = activeSwitch.checked
+                ? "Deneyim ziyaretçilere gösterilecek."
+                : "Deneyim ziyaretçilerden gizlenecek.";
+        }
+
+        currentSwitch.addEventListener("change", toggleEndDate);
+        activeSwitch.addEventListener("change", updateActiveText);
+
+        toggleEndDate();
+        updateActiveText();
+
+        form.addEventListener("submit", function () {
+            if (!form.checkValidity()) {
+                return;
+            }
+
+            saveButton.disabled = true;
+            saveButton.innerHTML =
+                '<span class="spinner-border spinner-border-sm me-2"></span>Güncelleniyor...';
+        });
+    });
+</script>

@@ -1,0 +1,274 @@
+﻿@model MyAcademy_PortfolioProject.Areas.Admin.Models.EducationContentFormViewModel
+
+@{
+    ViewData["Title"] = "Eğitim Bölümü İçeriği";
+    Layout = "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
+}
+
+<style>
+    .education-content {
+        --green: #2f5d4e;
+        --green-soft: #e7efe9;
+        --line: #ebe8e1;
+    }
+
+        .education-content .content-card {
+            background: #fff;
+            border: 1px solid var(--line);
+            border-radius: 16px;
+            padding: 1.75rem;
+            box-shadow: 0 2px 12px rgba(0,0,0,.04);
+            height: 100%;
+        }
+
+        .education-content .form-label {
+            color: #555;
+            font-weight: 600;
+            font-size: .9rem;
+        }
+
+        .education-content .form-control {
+            background: #fcfbf9;
+            border: 1px solid var(--line);
+            border-radius: 10px;
+            padding: 12px 14px;
+        }
+
+            .education-content .form-control:focus {
+                border-color: var(--green);
+                box-shadow: 0 0 0 .2rem rgba(47,93,78,.12);
+            }
+
+        .education-content .preview-box {
+            background: #fafbf9;
+            border: 1px solid var(--line);
+            border-radius: 14px;
+            padding: 1.5rem;
+        }
+
+        .education-content .preview-label {
+            color: var(--green);
+            font-size: .75rem;
+            letter-spacing: .12em;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .education-content .preview-quote {
+            border-left: 3px solid var(--green);
+            padding-left: 15px;
+            font-style: italic;
+            color: #666;
+            white-space: pre-wrap;
+        }
+
+        .education-content .save-btn {
+            background: var(--green);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 12px 22px;
+            font-weight: 600;
+        }
+
+            .education-content .save-btn:hover {
+                background: #244a3e;
+            }
+</style>
+
+<div class="education-content container-fluid py-4">
+
+    <!-- HEADER -->
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
+
+        <div>
+            <h4 class="mb-1">Eğitim Bölümü İçeriği</h4>
+            <p class="text-muted mb-0">
+                Ana sayfadaki Eğitim bölümünün başlık ve açıklamalarını yönetin.
+            </p>
+        </div>
+
+        <a asp-area="Admin"
+           asp-controller="Education"
+           asp-action="EducationList"
+           class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left me-1"></i>
+            Eğitim Listesine Dön
+        </a>
+    </div>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show"
+             role="alert">
+            <i class="bi bi-check-circle-fill me-2"></i>
+            @TempData["SuccessMessage"]
+
+            <button type="button" class="btn-close"
+                    data-bs-dismiss="alert" aria-label="Kapat"></button>
+        </div>
+    }
+
+    <form asp-area="Admin"
+          asp-controller="EducationContent"
+          asp-action="EditContent"
+          method="post">
+
+        @Html.AntiForgeryToken()
+
+        <div asp-validation-summary="ModelOnly"
+             class="text-danger mb-3"></div>
+
+        <div class="row g-4">
+
+            <!-- FORM -->
+            <div class="col-lg-7">
+                <div class="content-card">
+
+                    <h5 class="mb-4">
+                        <i class="bi bi-file-text me-2"></i>
+                        Bölüm Metinleri
+                    </h5>
+
+                    <div class="mb-4">
+                        <label asp-for="SectionLabel" class="form-label">
+                            Bölüm Etiketi
+                        </label>
+
+                        <input asp-for="SectionLabel"
+                               maxlength="100"
+                               class="form-control"
+                               placeholder="Örn: EĞİTİM YOLCULUĞUM" />
+
+                        <span asp-validation-for="SectionLabel"
+                              class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-4">
+                        <label asp-for="SectionTitle" class="form-label">
+                            Bölüm Başlığı *
+                        </label>
+
+                        <input asp-for="SectionTitle"
+                               maxlength="200"
+                               class="form-control"
+                               placeholder="Örn: Sürekli Öğrenme, Sürekli Gelişim"
+                               required />
+
+                        <span asp-validation-for="SectionTitle"
+                              class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-4">
+                        <label asp-for="Quote" class="form-label">
+                            Alıntı Metni
+                        </label>
+
+                        <textarea asp-for="Quote"
+                                  rows="3"
+                                  maxlength="1000"
+                                  class="form-control"
+                                  placeholder="Eğitimle ilgili kısa bir alıntı..."></textarea>
+
+                        <span asp-validation-for="Quote"
+                              class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-4">
+                        <label asp-for="Description" class="form-label">
+                            Bölüm Açıklaması
+                        </label>
+
+                        <textarea asp-for="Description"
+                                  rows="6"
+                                  maxlength="2000"
+                                  class="form-control"
+                                  placeholder="Eğitim yolculuğunuzu anlatan metin..."></textarea>
+
+                        <span asp-validation-for="Description"
+                              class="text-danger small"></span>
+                    </div>
+
+                    <div class="d-flex justify-content-end gap-2">
+                        <a asp-area="Admin"
+                           asp-controller="Education"
+                           asp-action="EducationList"
+                           class="btn btn-light px-4">
+                            Vazgeç
+                        </a>
+
+                        <button type="submit" class="save-btn">
+                            <i class="bi bi-check-circle me-1"></i>
+                            İçeriği Kaydet
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- LIVE PREVIEW -->
+            <div class="col-lg-5">
+                <div class="content-card">
+
+                    <h5 class="mb-4">
+                        <i class="bi bi-eye me-2"></i>
+                        İçerik Önizlemesi
+                    </h5>
+
+                    <div class="preview-box">
+
+                        <div id="previewLabel"
+                             class="preview-label mb-3"></div>
+
+                        <h3 id="previewTitle"
+                            class="fw-bold mb-3"></h3>
+
+                        <p id="previewQuote"
+                           class="preview-quote mb-3"></p>
+
+                        <p id="previewDescription"
+                           class="text-muted mb-0"
+                           style="white-space:pre-wrap;"></p>
+
+                    </div>
+
+                    <p class="text-muted small mt-3 mb-0">
+                        Formdaki metinleri değiştirdikçe önizleme güncellenir.
+                        Gerçek ana sayfanın tasarımı farklı olabilir.
+                    </p>
+
+                </div>
+            </div>
+
+        </div>
+    </form>
+
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+
+        const bindings = [
+            ["SectionLabel", "previewLabel", "BÖLÜM ETİKETİ"],
+            ["SectionTitle", "previewTitle", "Eğitim Başlığı"],
+            ["Quote", "previewQuote", ""],
+            ["Description", "previewDescription", ""]
+        ];
+
+        bindings.forEach(function (binding) {
+            const input = document.getElementById(binding[0]);
+            const preview = document.getElementById(binding[1]);
+            const fallback = binding[2];
+
+            if (!input || !preview) return;
+
+            function updatePreview() {
+                preview.textContent = input.value.trim() || fallback;
+            }
+
+            input.addEventListener("input", updatePreview);
+            updatePreview();
+        });
+
+    });
+</script>

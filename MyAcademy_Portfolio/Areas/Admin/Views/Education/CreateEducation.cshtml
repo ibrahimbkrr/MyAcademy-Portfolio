@@ -1,0 +1,341 @@
+﻿@model MyAcademy_PortfolioProject.Areas.Admin.Models.EducationFormViewModel
+
+@{
+    ViewData["Title"] = "Yeni Eğitim Ekle";
+    Layout = "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
+}
+
+<style>
+    .education-form {
+        --green: #2f5d4e;
+        --soft-green: #e7efe9;
+        --line: #ebe8e1;
+    }
+
+        .education-form .form-card {
+            background: #fff;
+            padding: 1.75rem;
+            border: 1px solid var(--line);
+            border-radius: 16px;
+            box-shadow: 0 2px 12px rgba(0,0,0,.04);
+            height: 100%;
+        }
+
+        .education-form .form-label {
+            color: #555;
+            font-weight: 600;
+            font-size: .88rem;
+        }
+
+        .education-form .form-control,
+        .education-form .form-select {
+            border: 1px solid var(--line);
+            border-radius: 10px;
+            padding: 12px 14px;
+            background: #fcfbf9;
+        }
+
+            .education-form .form-control:focus,
+            .education-form .form-select:focus {
+                border-color: var(--green);
+                box-shadow: 0 0 0 .2rem rgba(47,93,78,.12);
+            }
+
+        .education-form textarea {
+            min-height: 160px;
+            resize: vertical;
+        }
+
+        .education-form .switch-card {
+            background: #fcfbf9;
+            border: 1px solid var(--line);
+            border-radius: 12px;
+            padding: 15px;
+        }
+
+        .education-form .form-check-input:checked {
+            background-color: var(--green);
+            border-color: var(--green);
+        }
+
+        .education-form .save-btn {
+            background: var(--green);
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            padding: 12px 22px;
+            font-weight: 600;
+        }
+
+            .education-form .save-btn:hover {
+                background: #244a3e;
+            }
+</style>
+
+<div class="education-form container-fluid py-4">
+
+    <!-- HEADER -->
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
+        <div>
+            <h4 class="mb-1">Yeni Eğitim Ekle</h4>
+            <p class="text-muted mb-0">
+                Eğitim geçmişinize yeni bir kayıt ekleyin.
+            </p>
+        </div>
+
+        <a asp-area="Admin"
+           asp-controller="Education"
+           asp-action="EducationList"
+           class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left me-1"></i>
+            Eğitim Listesine Dön
+        </a>
+    </div>
+
+    <form asp-area="Admin"
+          asp-controller="Education"
+          asp-action="CreateEducation"
+          method="post"
+          id="educationCreateForm">
+
+        @Html.AntiForgeryToken()
+
+        <div asp-validation-summary="ModelOnly"
+             class="text-danger mb-3"></div>
+
+        <div class="row g-4">
+
+            <!-- LEFT COLUMN -->
+            <div class="col-lg-8">
+                <div class="form-card">
+
+                    <h5 class="mb-4">
+                        <i class="bi bi-mortarboard me-2"></i>
+                        Eğitim Bilgileri
+                    </h5>
+
+                    <div class="mb-4">
+                        <label asp-for="Title" class="form-label">
+                            Eğitim Başlığı *
+                        </label>
+
+                        <input asp-for="Title"
+                               class="form-control"
+                               maxlength="150"
+                               placeholder="Örn: Yazılım Mühendisliği"
+                               required />
+
+                        <span asp-validation-for="Title"
+                              class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-4">
+                        <label asp-for="Institution" class="form-label">
+                            Eğitim Kurumu *
+                        </label>
+
+                        <input asp-for="Institution"
+                               class="form-control"
+                               maxlength="150"
+                               placeholder="Örn: Fırat Üniversitesi"
+                               required />
+
+                        <span asp-validation-for="Institution"
+                              class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-4">
+                        <label asp-for="EducationType" class="form-label">
+                            Eğitim Türü *
+                        </label>
+
+                        <select asp-for="EducationType"
+                                class="form-select"
+                                required>
+                            <option value="">Eğitim türü seçiniz</option>
+                            <option value="Lisans">Lisans</option>
+                            <option value="Ön Lisans">Ön Lisans</option>
+                            <option value="Yüksek Lisans">Yüksek Lisans</option>
+                            <option value="Doktora">Doktora</option>
+                            <option value="Kurs">Kurs</option>
+                            <option value="Sertifika Programı">Sertifika Programı</option>
+                            <option value="Bootcamp">Bootcamp</option>
+                            <option value="Online Eğitim">Online Eğitim</option>
+                        </select>
+
+                        <span asp-validation-for="EducationType"
+                              class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Description" class="form-label">
+                            Açıklama
+                        </label>
+
+                        <textarea asp-for="Description"
+                                  rows="6"
+                                  maxlength="2000"
+                                  class="form-control"
+                                  placeholder="Eğitim sürecinizi ve kazandığınız yetkinlikleri açıklayın..."></textarea>
+
+                        <span asp-validation-for="Description"
+                              class="text-danger small"></span>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- RIGHT COLUMN -->
+            <div class="col-lg-4">
+                <div class="form-card">
+
+                    <h6 class="mb-4">Tarih ve Yayın Ayarları</h6>
+
+                    <div class="mb-3">
+                        <label asp-for="StartDate" class="form-label">
+                            Başlangıç Tarihi
+                        </label>
+
+                        <input asp-for="StartDate"
+                               asp-format="{0:yyyy-MM-dd}"
+                               type="date"
+                               class="form-control" />
+
+                        <span asp-validation-for="StartDate"
+                              class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="EndDate" class="form-label">
+                            Bitiş Tarihi
+                        </label>
+
+                        <input asp-for="EndDate"
+                               asp-format="{0:yyyy-MM-dd}"
+                               type="date"
+                               class="form-control" />
+
+                        <span asp-validation-for="EndDate"
+                              class="text-danger small"></span>
+                    </div>
+
+                    <div class="switch-card mb-4">
+                        <div class="form-check form-switch">
+                            <input asp-for="IsCurrent"
+                                   class="form-check-input"
+                                   role="switch" />
+
+                            <label asp-for="IsCurrent"
+                                   class="form-check-label fw-semibold">
+                                Devam Ediyor
+                            </label>
+                        </div>
+
+                        <small class="text-muted d-block mt-2">
+                            İşaretlendiğinde bitiş tarihi temizlenir.
+                        </small>
+                    </div>
+
+                    <div class="mb-4">
+                        <label asp-for="DisplayOrder" class="form-label">
+                            Gösterim Sırası
+                        </label>
+
+                        <input asp-for="DisplayOrder"
+                               type="number"
+                               min="0"
+                               class="form-control" />
+
+                        <span asp-validation-for="DisplayOrder"
+                              class="text-danger small"></span>
+                    </div>
+
+                    <div class="switch-card mb-4">
+                        <div class="form-check form-switch">
+                            <input asp-for="IsActive"
+                                   class="form-check-input"
+                                   role="switch" />
+
+                            <label asp-for="IsActive"
+                                   class="form-check-label fw-semibold">
+                                Portfolyoda Göster
+                            </label>
+                        </div>
+
+                        <small id="educationStatusText"
+                               class="text-muted d-block mt-2">
+                            @(Model.IsActive ? "Eğitim yayında." : "Eğitim gizli.")
+                        </small>
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="save-btn">
+                            <i class="bi bi-check-circle me-1"></i>
+                            Eğitimi Kaydet
+                        </button>
+
+                        <a asp-area="Admin"
+                           asp-controller="Education"
+                           asp-action="EducationList"
+                           class="btn btn-light">
+                            Vazgeç
+                        </a>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const current = document.getElementById("IsCurrent");
+        const endDate = document.getElementById("EndDate");
+        const startDate = document.getElementById("StartDate");
+        const active = document.getElementById("IsActive");
+        const statusText = document.getElementById("educationStatusText");
+        const form = document.getElementById("educationCreateForm");
+
+        function updateCurrent() {
+            if (current.checked) {
+                endDate.value = "";
+                endDate.disabled = true;
+            } else {
+                endDate.disabled = false;
+            }
+        }
+
+        function updateStatus() {
+            statusText.textContent = active.checked
+                ? "Eğitim yayında."
+                : "Eğitim gizli.";
+        }
+
+        current.addEventListener("change", updateCurrent);
+        active.addEventListener("change", updateStatus);
+
+        form.addEventListener("submit", function (event) {
+            if (!current.checked &&
+                startDate.value &&
+                endDate.value &&
+                endDate.value < startDate.value) {
+                event.preventDefault();
+                endDate.setCustomValidity(
+                    "Bitiş tarihi başlangıç tarihinden önce olamaz.");
+                endDate.reportValidity();
+            }
+        });
+
+        endDate.addEventListener("input", function () {
+            endDate.setCustomValidity("");
+        });
+
+        startDate.addEventListener("input", function () {
+            endDate.setCustomValidity("");
+        });
+
+        updateCurrent();
+        updateStatus();
+    });
+</script>

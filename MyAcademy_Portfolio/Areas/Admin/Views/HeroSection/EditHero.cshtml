@@ -1,0 +1,739 @@
+﻿@model MyAcademy_PortfolioProject.Areas.Admin.Models.HeroSectionFormViewModel
+
+@{
+    ViewData["Title"] = "Hero Yönetimi";
+    Layout = "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
+
+    var hasImage = !string.IsNullOrWhiteSpace(Model.ExistingImageUrl);
+}
+
+<style>
+    .hero-admin {
+        --hero-primary: #2f5d4e;
+        --hero-soft: #e7efe9;
+        --hero-border: #ebe8e1;
+        --hero-muted: #858780;
+    }
+
+        .hero-admin .hero-card {
+            background: #fff;
+            border: 1px solid var(--hero-border);
+            border-radius: 16px;
+            padding: 26px;
+            box-shadow: 0 2px 12px rgba(0,0,0,.04);
+        }
+
+        .hero-admin .card-heading {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 24px;
+        }
+
+        .hero-admin .card-icon {
+            width: 46px;
+            height: 46px;
+            display: grid;
+            place-items: center;
+            border-radius: 12px;
+            background: var(--hero-soft);
+            color: var(--hero-primary);
+            font-size: 1.3rem;
+            flex-shrink: 0;
+        }
+
+        .hero-admin .card-heading h5 {
+            margin: 0 0 4px;
+            font-weight: 600;
+        }
+
+        .hero-admin .card-heading small {
+            color: var(--hero-muted);
+        }
+
+        .hero-admin .form-label {
+            font-size: .89rem;
+            font-weight: 600;
+            color: #555;
+            margin-bottom: 8px;
+        }
+
+        .hero-admin .form-control {
+            border: 1px solid var(--hero-border);
+            background: #fcfbf9;
+            border-radius: 10px;
+            padding: 12px 14px;
+        }
+
+            .hero-admin .form-control:focus {
+                background: #fff;
+                border-color: var(--hero-primary);
+                box-shadow: 0 0 0 .2rem rgba(47,93,78,.12);
+            }
+
+        .hero-admin textarea {
+            resize: vertical;
+            min-height: 155px;
+        }
+
+        .hero-admin .badge-editor {
+            background: #fafbf9;
+            border: 1px solid var(--hero-border);
+            border-radius: 13px;
+            padding: 18px;
+            height: 100%;
+        }
+
+        .hero-admin .badge-editor-title {
+            font-weight: 600;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+            .hero-admin .badge-editor-title i {
+                color: var(--hero-primary);
+            }
+
+        .hero-admin .image-preview-box {
+            border: 1px solid var(--hero-border);
+            background: #fafbf9;
+            padding: 16px;
+            border-radius: 14px;
+            text-align: center;
+        }
+
+        .hero-admin .hero-image-preview {
+            display: block;
+            width: 100%;
+            max-height: 340px;
+            object-fit: contain;
+            border-radius: 10px;
+            background: #f2f3ef;
+        }
+
+        .hero-admin .image-placeholder {
+            min-height: 220px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            gap: 12px;
+            background: #f2f3ef;
+            color: #93958f;
+            border-radius: 10px;
+        }
+
+        .hero-admin .upload-area {
+            border: 2px dashed #cadbd0;
+            background: #fafcfb;
+            border-radius: 13px;
+            padding: 20px;
+        }
+
+        .hero-admin .upload-area-icon {
+            width: 48px;
+            height: 48px;
+            display: grid;
+            place-items: center;
+            margin: 0 auto 12px;
+            border-radius: 12px;
+            background: var(--hero-soft);
+            color: var(--hero-primary);
+            font-size: 1.4rem;
+        }
+
+        .hero-admin .note-box {
+            background: #f7faf8;
+            border: 1px solid #dce9e0;
+            border-radius: 10px;
+            color: #557366;
+            padding: 13px 15px;
+            font-size: .85rem;
+        }
+
+        .hero-admin .save-btn {
+            background: var(--hero-primary);
+            border: none;
+            color: white;
+            border-radius: 10px;
+            padding: 12px 20px;
+            font-weight: 600;
+        }
+
+            .hero-admin .save-btn:hover {
+                background: #244a3e;
+                color: white;
+            }
+
+        .hero-admin .preview-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            color: #555;
+            border: 1px solid var(--hero-border);
+            background: white;
+            padding: 10px 15px;
+            border-radius: 10px;
+        }
+
+            .hero-admin .preview-link:hover {
+                background: #f5f4ef;
+            }
+
+        .hero-admin .text-preview {
+            background: #f9faf8;
+            border: 1px solid var(--hero-border);
+            border-radius: 13px;
+            padding: 20px;
+            overflow-wrap: anywhere;
+        }
+
+        .hero-admin .text-preview-label {
+            color: var(--hero-primary);
+            font-size: .78rem;
+            letter-spacing: .08em;
+            font-weight: 700;
+        }
+
+        .hero-admin .badge-preview {
+            background: white;
+            border: 1px solid var(--hero-border);
+            border-radius: 12px;
+            padding: 12px 14px;
+        }
+
+        .hero-admin .badge-preview-value {
+            color: var(--hero-primary);
+            font-size: 1.15rem;
+            font-weight: 700;
+        }
+
+    @@media (max-width: 767px) {
+        .hero-admin .hero-card {
+            padding: 18px;
+        }
+    }
+</style>
+
+<div class="hero-admin container-fluid py-4">
+
+    <!-- HEADER -->
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
+
+        <div>
+            <h4 class="mb-1">Hero Yönetimi</h4>
+            <p class="text-muted mb-0">
+                Ana sayfanızın karşılama bölümünü düzenleyin.
+            </p>
+        </div>
+
+        <div class="d-flex gap-2 flex-wrap">
+            <a asp-area="Admin"
+               asp-controller="HeroTitle"
+               asp-action="HeroTitleList"
+               class="btn btn-outline-secondary">
+                <i class="bi bi-type me-1"></i>
+                Hareketli Başlıklar
+            </a>
+
+            <a asp-area=""
+               asp-controller="Default"
+               asp-action="Index"
+               target="_blank"
+               rel="noopener noreferrer"
+               class="preview-link">
+                <i class="bi bi-box-arrow-up-right"></i>
+                Siteyi Önizle
+            </a>
+        </div>
+    </div>
+
+    <!-- SUCCESS MESSAGE -->
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show"
+             role="alert">
+
+            <i class="bi bi-check-circle-fill me-2"></i>
+            @TempData["SuccessMessage"]
+
+            <button type="button"
+                    class="btn-close"
+                    data-bs-dismiss="alert"
+                    aria-label="Kapat"></button>
+        </div>
+    }
+
+    <!-- FORM -->
+    <form asp-area="Admin"
+          asp-controller="HeroSection"
+          asp-action="EditHero"
+          method="post"
+          enctype="multipart/form-data"
+          id="heroEditForm">
+
+        @Html.AntiForgeryToken()
+
+        <input asp-for="HeroSectionId" type="hidden" />
+
+        <div asp-validation-summary="ModelOnly"
+             class="text-danger mb-3"></div>
+
+        <div class="row g-4">
+
+            <!-- LEFT COLUMN -->
+            <div class="col-xl-8">
+
+                <!-- HERO TEXTS -->
+                <div class="hero-card mb-4">
+
+                    <div class="card-heading">
+                        <div class="card-icon">
+                            <i class="bi bi-type-h1"></i>
+                        </div>
+
+                        <div>
+                            <h5>Ana Hero İçeriği</h5>
+                            <small>
+                                Karşılama, başlık ve açıklama metinleri
+                            </small>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label asp-for="Greeting" class="form-label">
+                            Karşılama Metni *
+                        </label>
+
+                        <input asp-for="Greeting"
+                               class="form-control"
+                               maxlength="150"
+                               required
+                               placeholder="Örn: Merhaba, ben İbrahim" />
+
+                        <span asp-validation-for="Greeting"
+                              class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-4">
+                        <label asp-for="Title" class="form-label">
+                            Ana Başlık *
+                        </label>
+
+                        <input asp-for="Title"
+                               class="form-control"
+                               maxlength="200"
+                               required
+                               placeholder="Örn: Yazılım Mühendisi" />
+
+                        <span asp-validation-for="Title"
+                              class="text-danger small"></span>
+                    </div>
+
+                    <div>
+                        <label asp-for="Description" class="form-label">
+                            Açıklama *
+                        </label>
+
+                        <textarea asp-for="Description"
+                                  class="form-control"
+                                  rows="6"
+                                  maxlength="2000"
+                                  required
+                                  placeholder="Kendinizi ve çalışmalarınızı anlatın..."></textarea>
+
+                        <span asp-validation-for="Description"
+                              class="text-danger small"></span>
+                    </div>
+
+                </div>
+
+                <!-- BADGE EDITORS -->
+                <div class="hero-card mb-4">
+
+                    <div class="card-heading">
+                        <div class="card-icon">
+                            <i class="bi bi-award"></i>
+                        </div>
+
+                        <div>
+                            <h5>Hero Bilgi Rozetleri</h5>
+                            <small>
+                                Profil görselinin üstündeki ve altındaki bilgiler
+                            </small>
+                        </div>
+                    </div>
+
+                    <div class="row g-3">
+
+                        <!-- TOP BADGE -->
+                        <div class="col-md-6">
+                            <div class="badge-editor">
+
+                                <div class="badge-editor-title">
+                                    <i class="bi bi-arrow-up-circle"></i>
+                                    Üst Rozet
+                                </div>
+
+                                <div class="mb-3">
+                                    <label asp-for="TopBadgeValue"
+                                           class="form-label">
+                                        Rozet Değeri
+                                    </label>
+
+                                    <input asp-for="TopBadgeValue"
+                                           class="form-control"
+                                           maxlength="100"
+                                           placeholder="Örn: 10+" />
+
+                                    <span asp-validation-for="TopBadgeValue"
+                                          class="text-danger small"></span>
+                                </div>
+
+                                <div>
+                                    <label asp-for="TopBadgeText"
+                                           class="form-label">
+                                        Rozet Açıklaması
+                                    </label>
+
+                                    <input asp-for="TopBadgeText"
+                                           class="form-control"
+                                           maxlength="150"
+                                           placeholder="Örn: Tamamlanan Proje" />
+
+                                    <span asp-validation-for="TopBadgeText"
+                                          class="text-danger small"></span>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <!-- BOTTOM BADGE -->
+                        <div class="col-md-6">
+                            <div class="badge-editor">
+
+                                <div class="badge-editor-title">
+                                    <i class="bi bi-arrow-down-circle"></i>
+                                    Alt Rozet
+                                </div>
+
+                                <div class="mb-3">
+                                    <label asp-for="BottomBadgeValue"
+                                           class="form-label">
+                                        Rozet Değeri
+                                    </label>
+
+                                    <input asp-for="BottomBadgeValue"
+                                           class="form-control"
+                                           maxlength="100"
+                                           placeholder="Örn: 5+" />
+
+                                    <span asp-validation-for="BottomBadgeValue"
+                                          class="text-danger small"></span>
+                                </div>
+
+                                <div>
+                                    <label asp-for="BottomBadgeText"
+                                           class="form-label">
+                                        Rozet Açıklaması
+                                    </label>
+
+                                    <input asp-for="BottomBadgeText"
+                                           class="form-control"
+                                           maxlength="150"
+                                           placeholder="Örn: Yıllık Deneyim" />
+
+                                    <span asp-validation-for="BottomBadgeText"
+                                          class="text-danger small"></span>
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!-- LIVE TEXT PREVIEW -->
+                <div class="hero-card">
+
+                    <div class="card-heading">
+                        <div class="card-icon">
+                            <i class="bi bi-eye"></i>
+                        </div>
+
+                        <div>
+                            <h5>Metin Önizlemesi</h5>
+                            <small>
+                                Yazdığınız bilgilerin örnek görünümü
+                            </small>
+                        </div>
+                    </div>
+
+                    <div class="text-preview">
+
+                        <div id="previewGreeting"
+                             class="text-preview-label mb-2"></div>
+
+                        <h3 id="previewHeroTitle"
+                            class="fw-bold mb-3"></h3>
+
+                        <p id="previewDescription"
+                           class="text-muted"
+                           style="white-space:pre-wrap;"></p>
+
+                        <div class="row g-2 mt-3">
+
+                            <div class="col-md-6">
+                                <div class="badge-preview">
+                                    <div id="previewTopValue"
+                                         class="badge-preview-value"></div>
+
+                                    <small id="previewTopText"
+                                           class="text-muted"></small>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="badge-preview">
+                                    <div id="previewBottomValue"
+                                         class="badge-preview-value"></div>
+
+                                    <small id="previewBottomText"
+                                           class="text-muted"></small>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <p class="text-muted small mt-3 mb-0">
+                        Bu alan Admin önizlemesidir. Gerçek Hero tasarımınız
+                        ana sayfada görüntülenir.
+                    </p>
+
+                </div>
+
+            </div>
+
+            <!-- RIGHT COLUMN -->
+            <div class="col-xl-4">
+
+                <div class="hero-card">
+
+                    <div class="card-heading">
+                        <div class="card-icon">
+                            <i class="bi bi-image"></i>
+                        </div>
+
+                        <div>
+                            <h5>Hero Görseli</h5>
+                            <small>Mevcut veya yeni ana görsel</small>
+                        </div>
+                    </div>
+
+                    <!-- CURRENT IMAGE -->
+                    <div class="image-preview-box mb-4">
+
+                        @if (hasImage)
+                        {
+                            <img src="@Model.ExistingImageUrl"
+                                 class="hero-image-preview"
+                                 id="currentHeroImage"
+                                 alt="Mevcut Hero görseli" />
+
+                            <small class="text-muted d-block mt-2">
+                                Mevcut Hero görseli
+                            </small>
+                        }
+                        else
+                        {
+                            <div class="image-placeholder">
+                                <i class="bi bi-person-bounding-box fs-1"></i>
+                                <span>Henüz Hero görseli bulunmuyor.</span>
+                            </div>
+                        }
+
+                        <div id="newHeroImageContainer"
+                             class="d-none mt-3">
+
+                            <img id="newHeroImagePreview"
+                                 class="hero-image-preview"
+                                 alt="Yeni seçilen Hero görseli" />
+
+                            <small class="text-success d-block mt-2">
+                                Yeni seçilen görsel
+                            </small>
+                        </div>
+
+                    </div>
+
+                    <!-- IMAGE UPLOAD -->
+                    <div class="upload-area">
+
+                        <div class="upload-area-icon">
+                            <i class="bi bi-cloud-arrow-up"></i>
+                        </div>
+
+                        <label asp-for="ImageFile"
+                               class="form-label d-block text-center">
+                            Yeni Görsel Yükle
+                        </label>
+
+                        <input asp-for="ImageFile"
+                               type="file"
+                               class="form-control"
+                               accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp" />
+
+                        <span asp-validation-for="ImageFile"
+                              class="text-danger small"></span>
+
+                        <small class="text-muted d-block mt-2">
+                            JPG, PNG veya WEBP — En fazla 5 MB.
+                        </small>
+
+                        <small id="selectedHeroImageName"
+                               class="text-muted d-block mt-2">
+                            Yeni görsel seçilmedi.
+                        </small>
+
+                    </div>
+
+                    <div class="note-box mt-3">
+                        <i class="bi bi-shield-check me-1"></i>
+                        Yeni görsel yüklemezseniz mevcut görsel korunur.
+                    </div>
+
+                    <!-- ACTIONS -->
+                    <div class="d-grid gap-2 mt-4">
+
+                        <button type="submit"
+                                class="save-btn"
+                                id="saveHeroButton">
+
+                            <i class="bi bi-check-circle me-1"></i>
+                            Değişiklikleri Kaydet
+                        </button>
+
+                        <a asp-area="Admin"
+                           asp-controller="HeroTitle"
+                           asp-action="HeroTitleList"
+                           class="btn btn-outline-secondary py-2">
+
+                            <i class="bi bi-type me-1"></i>
+                            Hareketli Başlıkları Yönet
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </form>
+
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+
+        // ========== LIVE PREVIEW ==========
+
+        const fields = [
+            ["Greeting", "previewGreeting", "KARŞILAMA METNİ"],
+            ["Title", "previewHeroTitle", "Ana Hero Başlığı"],
+            ["Description", "previewDescription", ""],
+            ["TopBadgeValue", "previewTopValue", "—"],
+            ["TopBadgeText", "previewTopText", "Üst Rozet"],
+            ["BottomBadgeValue", "previewBottomValue", "—"],
+            ["BottomBadgeText", "previewBottomText", "Alt Rozet"]
+        ];
+
+        fields.forEach(function (field) {
+            const input = document.getElementById(field[0]);
+            const preview = document.getElementById(field[1]);
+
+            if (!input || !preview) return;
+
+            function updatePreview() {
+                preview.textContent = input.value.trim() || field[2];
+            }
+
+            input.addEventListener("input", updatePreview);
+            updatePreview();
+        });
+
+        // ========== IMAGE PREVIEW ==========
+
+        const imageInput = document.getElementById("ImageFile");
+        const imageContainer = document.getElementById("newHeroImageContainer");
+        const imagePreview = document.getElementById("newHeroImagePreview");
+        const imageName = document.getElementById("selectedHeroImageName");
+
+        let objectUrl = null;
+
+        imageInput.addEventListener("change", function () {
+
+            if (objectUrl) {
+                URL.revokeObjectURL(objectUrl);
+                objectUrl = null;
+            }
+
+            const file = this.files && this.files[0];
+
+            if (!file) {
+                imagePreview.removeAttribute("src");
+                imageContainer.classList.add("d-none");
+                imageName.textContent = "Yeni görsel seçilmedi.";
+                return;
+            }
+
+            imageName.textContent = file.name;
+
+            const allowedTypes = [
+                "image/jpeg",
+                "image/png",
+                "image/webp"
+            ];
+
+            if (!allowedTypes.includes(file.type)) {
+                imagePreview.removeAttribute("src");
+                imageContainer.classList.add("d-none");
+                return;
+            }
+
+            objectUrl = URL.createObjectURL(file);
+            imagePreview.src = objectUrl;
+            imageContainer.classList.remove("d-none");
+        });
+
+        window.addEventListener("pagehide", function () {
+            if (objectUrl) {
+                URL.revokeObjectURL(objectUrl);
+            }
+        });
+
+        // ========== SUBMIT ==========
+
+        const form = document.getElementById("heroEditForm");
+        const saveButton = document.getElementById("saveHeroButton");
+
+        form.addEventListener("submit", function () {
+
+            if (!form.checkValidity()) return;
+
+            saveButton.disabled = true;
+
+            saveButton.innerHTML =
+                '<span class="spinner-border spinner-border-sm me-2"></span>' +
+                'Kaydediliyor...';
+        });
+
+    });
+</script>

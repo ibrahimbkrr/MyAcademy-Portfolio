@@ -1,0 +1,241 @@
+﻿@{
+    // Mevcut Controller ve Action bilgilerini al
+    var controller = ViewContext.RouteData.Values["controller"]?.ToString() ?? "";
+    var action = ViewContext.RouteData.Values["action"]?.ToString() ?? "";
+
+    // Sayfanın ana başlığı
+    var pageName = controller switch
+    {
+        "Dashboard" => "Dashboard",
+
+        "HeroSection" => "Hero Yönetimi",
+        "HeroTitle" => "Hareketli Başlıklar",
+
+        "About" => "Hakkımda",
+
+        "SocialMedia" => "Sosyal Medya",
+
+        "Skill" => "Yeteneklerim",
+        "SkillCategory" => "Yetenek Kategorileri",
+
+        "Experience" => "Deneyimlerim",
+
+        "Project" => "Projelerim",
+        "Category" => "Proje Kategorileri",
+
+        "Education" => "Eğitim",
+        "EducationContent" => "Eğitim Bölümü İçeriği",
+
+        "Contact" => "İletişim",
+        "Message" => "Gelen Mesajlar",
+        "Philosophy" => "Felsefem",
+        "Footer" => "Footer Yönetimi",
+        _ => "Yönetim Paneli"
+    };
+
+    // Ekleme ve güncelleme sayfalarının başlıkları
+    var detailName = (controller, action) switch
+    {
+        // PROJELER
+        ("Project", "CreateProject") => "Yeni Proje",
+        ("Project", "UpdateProject") => "Proje Güncelle",
+
+        // PROJE KATEGORİLERİ
+        ("Category", "CreateCategory") => "Yeni Proje Kategorisi",
+        ("Category", "UpdateCategory") => "Proje Kategorisi Güncelle",
+
+        // YETENEKLER
+        ("Skill", "CreateSkill") => "Yeni Yetenek",
+        ("Skill", "UpdateSkill") => "Yetenek Güncelle",
+
+        // YETENEK KATEGORİLERİ
+        ("SkillCategory", "CreateCategory") => "Yeni Yetenek Kategorisi",
+        ("SkillCategory", "UpdateCategory") => "Yetenek Kategorisi Güncelle",
+
+        // DENEYİMLER
+        ("Experience", "CreateExperience") => "Yeni Deneyim",
+        ("Experience", "UpdateExperience") => "Deneyim Güncelle",
+
+        // EĞİTİM
+        ("Education", "CreateEducation") => "Yeni Eğitim",
+        ("Education", "UpdateEducation") => "Eğitim Güncelle",
+
+        // HERO
+        ("HeroTitle", "CreateHeroTitle") => "Yeni Hareketli Başlık",
+        ("HeroTitle", "UpdateHeroTitle") => "Hareketli Başlık Güncelle",
+
+        // SOSYAL MEDYA
+        ("SocialMedia", "CreateSocialMedia") => "Yeni Sosyal Medya Hesabı",
+        ("SocialMedia", "UpdateSocialMedia") => "Sosyal Medya Hesabı Güncelle",
+
+        // MESAJLAR
+        ("Message", "MessageDetails") => "Mesaj Detayları",
+        ("Message", "CreateMessage") => "Yeni Mesaj",
+        ("Message", "UpdateMessage") => "Mesaj Güncelle",
+
+        _ => ""
+    };
+
+    // Her Controller'ın listeleme veya ana düzenleme sayfası
+    var listAction = controller switch
+    {
+        "Dashboard" => "Index",
+
+        "HeroSection" => "EditHero",
+        "HeroTitle" => "HeroTitleList",
+
+        "About" => "EditAbout",
+
+        "SocialMedia" => "SocialMediaList",
+
+        "Skill" => "SkillList",
+        "SkillCategory" => "CategoryList",
+
+        "Experience" => "ExperienceList",
+
+        "Project" => "ProjectList",
+        "Category" => "CategoryList",
+
+        "Education" => "EducationList",
+        "EducationContent" => "EditContent",
+
+        "Contact" => "ContactList",
+        "Message" => "MessageList",
+
+        "Philosophy" => "EditPhilosophy",
+
+        "Footer" => "EditFooter",
+
+
+        _ => "Index"
+    };
+
+    // Eğitim bölümü içeriği için özel yönlendirme
+    var parentController = controller == "EducationContent"
+        ? "Education"
+        : controller;
+
+    var parentAction = controller == "EducationContent"
+        ? "EducationList"
+        : listAction;
+
+    var parentPageName = controller == "EducationContent"
+        ? "Eğitim"
+        : pageName;
+}
+
+<header class="admin-navbar">
+
+    <!-- SOL TARAF -->
+    <div class="navbar-left">
+
+        <!-- Sidebar Aç / Kapat -->
+        <button type="button"
+                class="sidebar-toggle-btn"
+                id="sidebarToggle"
+                aria-label="Menüyü Aç/Kapat">
+
+            <i class="bi bi-list"></i>
+        </button>
+
+        <!-- DİNAMİK BREADCRUMB -->
+        <div class="breadcrumb-custom">
+
+            <!-- ANA SAYFA -->
+            <a asp-area="Admin"
+               asp-controller="Dashboard"
+               asp-action="Index">
+
+                <i class="bi bi-house me-1"></i>
+                Ana Sayfa
+            </a>
+
+            <span class="separator">/</span>
+
+            @if (controller == "EducationContent")
+            {
+                <!-- EĞİTİM BÖLÜMÜ İÇERİĞİ -->
+                <a asp-area="Admin"
+                   asp-controller="Education"
+                   asp-action="EducationList">
+
+                    Eğitim
+                </a>
+
+                <span class="separator">/</span>
+
+                <span class="active-crumb">
+                    Eğitim Bölümü İçeriği
+                </span>
+            }
+            else if (!string.IsNullOrWhiteSpace(detailName))
+            {
+                <!-- EKLEME / GÜNCELLEME SAYFALARI -->
+                <a asp-area="Admin"
+                   asp-controller="@parentController"
+                   asp-action="@parentAction">
+
+                    @parentPageName
+                </a>
+
+                <span class="separator">/</span>
+
+                <span class="active-crumb">
+                    @detailName
+                </span>
+            }
+            else
+            {
+                <!-- LİSTELEME VE ANA DÜZENLEME SAYFALARI -->
+                <span class="active-crumb">
+                    @pageName
+                </span>
+            }
+
+        </div>
+
+    </div>
+
+    <!-- SAĞ TARAF -->
+    <div class="navbar-right">
+
+        <!-- HIZLI EKLE -->
+        <a asp-area="Admin"
+           asp-controller="Skill"
+           asp-action="CreateSkill"
+           class="btn-quick-add text-decoration-none"
+           title="Yeni Yetenek Ekle">
+
+            <i class="bi bi-plus-lg"></i>
+            <span>Hızlı Ekle</span>
+        </a>
+
+        <!-- GELEN MESAJLAR -->
+        <a asp-area="Admin"
+           asp-controller="Message"
+           asp-action="MessageList"
+           class="icon-action-btn"
+           title="Gelen Mesajlar">
+
+            <i class="bi bi-chat-left-text"></i>
+        </a>
+
+        <!-- ADMIN PROFİL -->
+        <div class="nav-profile-pill">
+
+            <div class="nav-avatar-mini">AK</div>
+
+            <span class="d-none d-sm-inline font-weight-600"
+                  style="font-size: 0.825rem; font-weight: 600;">
+
+                Admin
+            </span>
+
+            <i class="bi bi-person-circle text-muted"
+               style="font-size: 0.85rem;"></i>
+
+        </div>
+
+    </div>
+
+</header>

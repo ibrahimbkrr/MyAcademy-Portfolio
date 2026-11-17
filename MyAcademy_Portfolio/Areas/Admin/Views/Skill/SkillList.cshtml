@@ -1,0 +1,290 @@
+﻿@model List<MyAcademy_PortfolioProject.Entities.Skill>
+
+@{
+    ViewData["Title"] = "Yetenek Yönetimi";
+    Layout = "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
+
+    var totalSkills = Model.Count;
+    var categoryCount = Model
+        .Select(x => x.SkillCategoryId)
+        .Distinct()
+        .Count();
+
+    var averageLevel = Model.Any()
+        ? Model.Average(x => x.Level)
+        : 0;
+}
+
+<style>
+    .skills-page {
+        --green: #2f5d4e;
+        --soft-green: #e7efe9;
+        --line: #ebe8e1;
+    }
+
+        .skills-page .skill-card {
+            background: #fff;
+            border: 1px solid var(--line);
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 12px rgba(0,0,0,.04);
+        }
+
+        .skills-page .skill-stat {
+            background: #fff;
+            padding: 1.25rem;
+            border: 1px solid var(--line);
+            border-radius: 14px;
+        }
+
+            .skills-page .skill-stat h3 {
+                font-size: 1.8rem;
+                font-weight: 700;
+                margin: 5px 0 0;
+            }
+
+        .skills-page .primary-btn {
+            display: inline-block;
+            background: var(--green);
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            text-decoration: none;
+            padding: 10px 18px;
+        }
+
+            .skills-page .primary-btn:hover {
+                background: #244a3e;
+                color: #fff;
+            }
+
+        .skills-page .skill-progress {
+            height: 9px;
+            background: #e9eeeb;
+            border-radius: 20px;
+            overflow: hidden;
+            min-width: 120px;
+        }
+
+        .skills-page .skill-progress-bar {
+            height: 100%;
+            background: var(--green);
+            border-radius: 20px;
+        }
+
+        .skills-page .category-badge {
+            background: var(--soft-green);
+            color: var(--green);
+            border-radius: 8px;
+            padding: 6px 10px;
+            font-size: .8rem;
+        }
+
+        .skills-page .order-badge {
+            display: inline-block;
+            background: #f3f3f0;
+            color: #555;
+            border-radius: 7px;
+            padding: 5px 10px;
+        }
+</style>
+
+<div class="skills-page container-fluid py-4">
+
+    <!-- HEADER -->
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
+        <div>
+            <h4 class="mb-1">Yetenek Yönetimi</h4>
+            <p class="text-muted mb-0">
+                Portfolyonuzdaki teknik yetenekleri ve seviyelerini yönetin.
+            </p>
+        </div>
+
+        <div class="d-flex flex-wrap gap-2">
+
+            <a asp-area="Admin"
+               asp-controller="SkillCategory"
+               asp-action="CategoryList"
+               class="btn btn-outline-secondary">
+                <i class="bi bi-grid me-1"></i>
+                Kategoriler
+            </a>
+
+            <a asp-area="Admin"
+               asp-controller="Skill"
+               asp-action="CreateSkill"
+               class="primary-btn">
+                <i class="bi bi-plus-lg me-1"></i>
+                Yeni Yetenek Ekle
+            </a>
+
+        </div>
+    </div>
+
+    <!-- NOTIFICATIONS -->
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="bi bi-check-circle-fill me-2"></i>
+            @TempData["SuccessMessage"]
+
+            <button type="button"
+                    class="btn-close"
+                    data-bs-dismiss="alert"
+                    aria-label="Kapat"></button>
+        </div>
+    }
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+            @TempData["ErrorMessage"]
+
+            <button type="button"
+                    class="btn-close"
+                    data-bs-dismiss="alert"
+                    aria-label="Kapat"></button>
+        </div>
+    }
+
+    <!-- STATISTICS -->
+    <div class="row g-3 mb-4">
+
+        <div class="col-md-4">
+            <div class="skill-stat">
+                <small class="text-muted">Toplam Yetenek</small>
+                <h3>@totalSkills</h3>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="skill-stat">
+                <small class="text-muted">Yetenek Bulunan Kategori</small>
+                <h3>@categoryCount</h3>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="skill-stat">
+                <small class="text-muted">Ortalama Seviye</small>
+                <h3>%@averageLevel.ToString("0")</h3>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- SKILL TABLE -->
+    <div class="skill-card">
+
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+
+                <thead class="table-light">
+                    <tr>
+                        <th>ID</th>
+                        <th>Yetenek</th>
+                        <th>Kategori</th>
+                        <th style="min-width:160px;">Seviye</th>
+                        <th>Sıra</th>
+                        <th>İşlemler</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>#@item.SkillId</td>
+
+                            <td class="fw-semibold">
+                                @item.SkillName
+                            </td>
+
+                            <td>
+                                <span class="category-badge">
+                                    @(item.SkillCategory?.CategoryName ?? "Kategori Yok")
+                                </span>
+                            </td>
+
+                            <td>
+                                <div class="d-flex justify-content-between mb-1">
+                                    <small class="text-muted">Yetenek Seviyesi</small>
+                                    <small class="fw-semibold">%@item.Level</small>
+                                </div>
+
+                                <div class="skill-progress"
+                                     role="progressbar"
+                                     aria-label="@item.SkillName seviyesi"
+                                     aria-valuenow="@item.Level"
+                                     aria-valuemin="0"
+                                     aria-valuemax="100">
+
+                                    <div class="skill-progress-bar"
+                                         style="width:@(Math.Clamp(item.Level, 0, 100))%;">
+                                    </div>
+
+                                </div>
+                            </td>
+
+                            <td>
+                                <span class="order-badge">
+                                    @item.DisplayOrder
+                                </span>
+                            </td>
+
+                            <td>
+                                <div class="d-flex gap-2 flex-wrap">
+
+                                    <a asp-area="Admin"
+                                       asp-controller="Skill"
+                                       asp-action="UpdateSkill"
+                                       asp-route-id="@item.SkillId"
+                                       class="btn btn-warning btn-sm">
+
+                                        <i class="bi bi-pencil-square me-1"></i>
+                                        Düzenle
+                                    </a>
+
+                                    <form asp-area="Admin"
+                                          asp-controller="Skill"
+                                          asp-action="DeleteSkill"
+                                          asp-route-id="@item.SkillId"
+                                          method="post"
+                                          onsubmit="return confirm('Bu yeteneği kalıcı olarak silmek istiyor musunuz?');">
+
+                                        @Html.AntiForgeryToken()
+
+                                        <button type="submit"
+                                                class="btn btn-danger btn-sm">
+
+                                            <i class="bi bi-trash me-1"></i>
+                                            Sil
+                                        </button>
+
+                                    </form>
+
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+
+            </table>
+        </div>
+
+        @if (!Model.Any())
+        {
+            <div class="text-center py-5">
+                <i class="bi bi-code-slash fs-1 text-muted"></i>
+
+                <h5 class="mt-3">Henüz yetenek bulunmuyor</h5>
+
+                <p class="text-muted">
+                    İlk yeteneğinizi ekleyerek başlayabilirsiniz.
+                </p>
+            </div>
+        }
+
+    </div>
+</div>

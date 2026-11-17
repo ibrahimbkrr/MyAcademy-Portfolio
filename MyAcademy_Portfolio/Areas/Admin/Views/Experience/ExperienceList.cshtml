@@ -1,0 +1,596 @@
+﻿@model List<MyAcademy_PortfolioProject.Entities.Experience>
+@using System.Globalization
+
+@{
+    ViewData["Title"] = "Deneyim Yönetimi";
+    Layout = "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
+
+    var trCulture = CultureInfo.GetCultureInfo("tr-TR");
+
+    var totalCount = Model.Count;
+    var activeCount = Model.Count(x => x.IsActive);
+    var passiveCount = Model.Count(x => !x.IsActive);
+    var currentCount = Model.Count(x => x.IsCurrent);
+}
+
+<main class="page-content-area">
+
+    <!-- PAGE HEADER -->
+    <div class="content-header-row">
+        <div>
+            <h1 class="page-title">Deneyimlerim Listesi</h1>
+            <p class="page-subtitle">
+                Portfolyo sitenizde yer alacak deneyim içeriklerini
+                buradan yönetebilirsiniz.
+            </p>
+        </div>
+
+        <div class="header-actions">
+            <a asp-area="Admin"
+               asp-controller="Experience"
+               asp-action="CreateExperience"
+               class="btn-pastel-primary text-decoration-none">
+
+                <i class="bi bi-plus-circle-fill"></i>
+                <span>Yeni Deneyim Ekle</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- SUCCESS / ERROR MESSAGES -->
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show"
+             role="alert">
+
+            <i class="bi bi-check-circle-fill me-2"></i>
+            @TempData["SuccessMessage"]
+
+            <button type="button"
+                    class="btn-close"
+                    data-bs-dismiss="alert"
+                    aria-label="Kapat">
+            </button>
+        </div>
+    }
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show"
+             role="alert">
+
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+            @TempData["ErrorMessage"]
+
+            <button type="button"
+                    class="btn-close"
+                    data-bs-dismiss="alert"
+                    aria-label="Kapat">
+            </button>
+        </div>
+    }
+
+    <!-- STATISTICS -->
+
+    <div class="stats-row">
+
+        <!-- Total Experience -->
+        <div class="stat-card">
+            <div class="stat-icon-wrapper icon-green">
+                <i class="bi bi-briefcase"></i>
+            </div>
+
+            <div class="stat-content">
+                <span class="stat-label">Toplam Deneyim</span>
+                <h3 class="stat-value">@totalCount</h3>
+            </div>
+        </div>
+
+        <!-- Active Experience -->
+        <div class="stat-card">
+            <div class="stat-icon-wrapper icon-blue">
+                <i class="bi bi-check2-circle"></i>
+            </div>
+
+            <div class="stat-content">
+                <span class="stat-label">Aktif Kayıt</span>
+                <h3 class="stat-value">@activeCount</h3>
+            </div>
+        </div>
+
+        <!-- Passive Experience -->
+        <div class="stat-card">
+            <div class="stat-icon-wrapper icon-beige">
+                <i class="bi bi-pause-circle"></i>
+            </div>
+
+            <div class="stat-content">
+                <span class="stat-label">Pasif Kayıt</span>
+                <h3 class="stat-value">@passiveCount</h3>
+            </div>
+        </div>
+
+        <!-- Current Experience -->
+        <div class="stat-card">
+            <div class="stat-icon-wrapper icon-purple">
+                <i class="bi bi-calendar-check"></i>
+            </div>
+
+            <div class="stat-content">
+                <span class="stat-label">Devam Eden Deneyim</span>
+                <h3 class="stat-value">@currentCount</h3>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- EXPERIENCE TABLE -->
+
+    <div class="data-table-card">
+
+        <!-- FILTER BAR -->
+        <div class="table-filter-bar">
+
+            <div class="filters-left-group">
+
+                <!-- Search -->
+                <div class="filter-search-box">
+                    <i class="bi bi-search"></i>
+
+                    <input type="text"
+                           id="tableSearchInput"
+                           placeholder="Başlık veya şirket ara..." />
+                </div>
+
+                <!-- Status Filter -->
+                <select class="filter-select"
+                        id="statusFilterSelect">
+
+                    <option value="all">
+                        Durum Seçiniz (Tümü)
+                    </option>
+
+                    <option value="Aktif">
+                        Aktif
+                    </option>
+
+                    <option value="Pasif">
+                        Pasif
+                    </option>
+
+                </select>
+
+                <!-- Sort -->
+                <select class="filter-select"
+                        id="sortSelect">
+
+                    <option value="date-desc">
+                        Başlangıç Tarihi (Yeni → Eski)
+                    </option>
+
+                    <option value="date-asc">
+                        Başlangıç Tarihi (Eski → Yeni)
+                    </option>
+
+                    <option value="title-asc">
+                        Başlık (A-Z)
+                    </option>
+
+                    <option value="title-desc">
+                        Başlık (Z-A)
+                    </option>
+
+                </select>
+
+            </div>
+
+            <div class="filters-right-group">
+
+                <button type="button"
+                        class="btn-table-util"
+                        id="btnResetFilters"
+                        title="Filtreleri Temizle">
+
+                    <i class="bi bi-arrow-clockwise"></i>
+                    <span class="d-none d-md-inline">
+                        Filtreleri Temizle
+                    </span>
+                </button>
+
+                <a asp-area="Admin"
+                   asp-controller="Experience"
+                   asp-action="CreateExperience"
+                   class="btn-pastel-primary text-decoration-none"
+                   style="padding:7px 14px;font-size:.8rem;">
+
+                    <i class="bi bi-plus-lg"></i>
+                    <span>Ekle</span>
+                </a>
+
+            </div>
+
+        </div>
+
+        <!-- TABLE -->
+        <div class="table-responsive-wrapper">
+
+            <table class="custom-admin-table"
+                   id="experienceTable">
+
+                <thead>
+                    <tr>
+                        <th style="width:65px;">ID</th>
+                        <th>Deneyim Başlığı</th>
+                        <th>Kurum / Şirket</th>
+                        <th>Çalışma Türü</th>
+                        <th>Tarih Aralığı</th>
+                        <th>Durum</th>
+                        <th style="text-align:right;width:160px;">
+                            İşlemler
+                        </th>
+                    </tr>
+                </thead>
+
+                <tbody id="experienceTableBody">
+
+                    @foreach (var item in Model)
+                    {
+                        var startDateText = item.StartDate.HasValue
+                        ? item.StartDate.Value.ToString(
+                        "MMMM yyyy", trCulture)
+                        : "Belirtilmemiş";
+
+                        var endDateText = item.IsCurrent
+                        ? "Devam Ediyor"
+                        : item.EndDate.HasValue
+                        ? item.EndDate.Value.ToString(
+                        "MMMM yyyy", trCulture)
+                        : "Belirtilmemiş";
+
+                        var statusText = item.IsActive
+                        ? "Aktif"
+                        : "Pasif";
+
+                        <tr class="experience-data-row"
+                            data-id="@item.ExperienceId"
+                            data-title="@item.Title"
+                            data-company="@item.CompanyName"
+                            data-status="@statusText"
+                            data-date="@(item.StartDate?.ToString("yyyy-MM-dd") ?? "")">
+
+                            <!-- ID -->
+                            <td class="col-id">
+                                #@item.ExperienceId
+                            </td>
+
+                            <!-- TITLE -->
+                            <td>
+                                <div class="experience-title-cell">
+
+                                    <div class="exp-icon-bullet">
+                                        <i class="bi bi-briefcase"></i>
+                                    </div>
+
+                                    <div>
+                                        <span class="exp-title-text">
+                                            @item.Title
+                                        </span>
+
+                                        <small class="text-muted d-block"
+                                               style="font-size:.75rem;">
+                                            @(string.IsNullOrWhiteSpace(item.Description)
+                                                                                    ? "Açıklama bulunmuyor."
+                                                                                    : item.Description.Length > 65
+                                                                                    ? item.Description.Substring(0, 65) + "..."
+                                                                                    : item.Description)
+                                    </small>
+                                </div>
+
+                                </div>
+                            </td>
+
+                            <!-- COMPANY -->
+                            <td>
+                                <div class="company-cell">
+
+                                    <i class="bi bi-building company-badge-icon"></i>
+
+                                    <span>
+                                        @item.CompanyName
+                                    </span>
+
+                                </div>
+                            </td>
+
+                            <!-- CATEGORY -->
+                            <td>
+                                <span class="work-type-badge">
+                                    @item.CategoryName
+                                </span>
+                            </td>
+
+                            <!-- DATES -->
+                            <td>
+                                <span class="date-badge">
+
+                                    <i class="bi bi-calendar2-range"></i>
+
+                                    @startDateText - @endDateText
+
+                                </span>
+                            </td>
+
+                            <!-- STATUS -->
+                            <td>
+                            @if (item.IsActive)
+                                {
+                                    <span class="status-pill status-active">
+                                        Aktif
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="status-pill status-passive">
+                                        Pasif
+                                    </span>
+                                }
+                            </td>
+
+                            <!-- ACTIONS -->
+                            <td style="text-align:right;">
+
+                                <div class="row-actions-group justify-content-end">
+
+                                    <!-- UPDATE -->
+                                    <a asp-area="Admin"
+                                       asp-controller="Experience"
+                                       asp-action="UpdateExperience"
+                                       asp-route-id="@item.ExperienceId"
+                                       class="btn-action-icon btn-edit"
+                                       title="Deneyimi Düzenle"
+                                       aria-label="Deneyimi Düzenle">
+
+                                        <i class="bi bi-pencil-square"></i>
+                                    </a>
+
+                                    <!-- DELETE -->
+                                    <form asp-area="Admin"
+                                          asp-controller="Experience"
+                                          asp-action="DeleteExperience"
+                                          asp-route-id="@item.ExperienceId"
+                                          method="post"
+                                          class="d-inline"
+                                          onsubmit="return confirm('Bu deneyimi kalıcı olarak silmek istediğinize emin misiniz?');">
+
+                                        @Html.AntiForgeryToken()
+
+                                        <button type="submit"
+                                                class="btn-action-icon btn-delete"
+                                                title="Deneyimi Sil"
+                                                aria-label="Deneyimi Sil">
+
+                                            <i class="bi bi-trash3"></i>
+                                        </button>
+
+                                    </form>
+
+                                </div>
+
+                            </td>
+
+                        </tr>
+                    }
+
+                    <!-- No Filter Results -->
+                    <tr id="noFilterResultsRow" style="display:none;">
+                        <td colspan="7"
+                            class="text-center text-muted py-5">
+
+                            <i class="bi bi-search fs-2 d-block mb-2"></i>
+
+                            Arama kriterlerine uygun deneyim bulunamadı.
+                        </td>
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+        <!-- EMPTY STATE -->
+        @if (!Model.Any())
+        {
+            <div class="text-center py-5">
+
+                <i class="bi bi-briefcase fs-1 text-muted"></i>
+
+                <h5 class="mt-3">
+                    Henüz deneyim bulunmuyor
+                </h5>
+
+                <p class="text-muted">
+                    İlk deneyiminizi ekleyerek başlayabilirsiniz.
+                </p>
+
+                <a asp-area="Admin"
+                   asp-controller="Experience"
+                   asp-action="CreateExperience"
+                   class="btn-pastel-primary text-decoration-none">
+
+                    <i class="bi bi-plus-circle me-1"></i>
+                    Deneyim Ekle
+                </a>
+
+            </div>
+        }
+
+        <!-- TABLE FOOTER -->
+        <div class="table-footer-area">
+
+            <div class="pagination-counter">
+
+                Toplam
+                <strong>@totalCount</strong>
+                kayıttan
+                <strong id="visibleRecordCount">@totalCount</strong>
+                kayıt gösteriliyor.
+
+            </div>
+
+        </div>
+
+    </div>
+
+</main>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+
+        const searchInput =
+            document.getElementById("tableSearchInput");
+
+        const statusFilter =
+            document.getElementById("statusFilterSelect");
+
+        const sortSelect =
+            document.getElementById("sortSelect");
+
+        const resetButton =
+            document.getElementById("btnResetFilters");
+
+        const tableBody =
+            document.getElementById("experienceTableBody");
+
+        const visibleCount =
+            document.getElementById("visibleRecordCount");
+
+        const noResultsRow =
+            document.getElementById("noFilterResultsRow");
+
+        const rows = Array.from(
+            tableBody.querySelectorAll(".experience-data-row")
+        );
+
+        function normalizeText(value) {
+            return (value || "")
+                .toLocaleLowerCase("tr-TR")
+                .trim();
+        }
+
+        function applyFiltersAndSort() {
+
+            const searchValue =
+                normalizeText(searchInput.value);
+
+            const selectedStatus =
+                statusFilter.value;
+
+            const sortValue =
+                sortSelect.value;
+
+            // SORT
+            const sortedRows = [...rows];
+
+            sortedRows.sort(function (a, b) {
+
+                const titleA = a.dataset.title || "";
+                const titleB = b.dataset.title || "";
+
+                const dateA = a.dataset.date || "";
+                const dateB = b.dataset.date || "";
+
+                if (sortValue === "title-asc") {
+                    return titleA.localeCompare(titleB, "tr");
+                }
+
+                if (sortValue === "title-desc") {
+                    return titleB.localeCompare(titleA, "tr");
+                }
+
+                if (sortValue === "date-asc") {
+                    return dateA.localeCompare(dateB);
+                }
+
+                return dateB.localeCompare(dateA);
+            });
+
+            // Reorder actual table rows
+            sortedRows.forEach(function (row) {
+                tableBody.insertBefore(row, noResultsRow);
+            });
+
+            let count = 0;
+
+            // FILTER
+            sortedRows.forEach(function (row) {
+
+                const title =
+                    normalizeText(row.dataset.title);
+
+                const company =
+                    normalizeText(row.dataset.company);
+
+                const status =
+                    row.dataset.status;
+
+                const matchesSearch =
+                    title.includes(searchValue) ||
+                    company.includes(searchValue);
+
+                const matchesStatus =
+                    selectedStatus === "all" ||
+                    status === selectedStatus;
+
+                const shouldShow =
+                    matchesSearch && matchesStatus;
+
+                row.style.display =
+                    shouldShow ? "" : "none";
+
+                if (shouldShow) {
+                    count++;
+                }
+            });
+
+            visibleCount.textContent = count;
+
+            noResultsRow.style.display =
+                rows.length > 0 && count === 0
+                    ? ""
+                    : "none";
+        }
+
+        // Search
+        searchInput.addEventListener(
+            "input",
+            applyFiltersAndSort
+        );
+
+        // Status filter
+        statusFilter.addEventListener(
+            "change",
+            applyFiltersAndSort
+        );
+
+        // Sorting
+        sortSelect.addEventListener(
+            "change",
+            applyFiltersAndSort
+        );
+
+        // Reset filters
+        resetButton.addEventListener("click", function () {
+
+            searchInput.value = "";
+            statusFilter.value = "all";
+            sortSelect.value = "date-desc";
+
+            applyFiltersAndSort();
+        });
+
+        // Initial render
+        applyFiltersAndSort();
+
+    });
+</script>

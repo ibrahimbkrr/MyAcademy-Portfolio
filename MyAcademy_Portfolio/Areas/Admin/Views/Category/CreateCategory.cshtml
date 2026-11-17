@@ -1,0 +1,172 @@
+﻿@model MyAcademy_PortfolioProject.Areas.Admin.Models.CategoryCreateViewModel
+
+@{
+    ViewData["Title"] = "Yeni Kategori";
+    Layout = "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
+}
+
+<style>
+    .cf {
+        --g: #2f5d4e;
+        --g-soft: #e7efe9;
+        --line: #ebe8e1;
+    }
+
+    .cf-card {
+        max-width: 850px;
+        background: #fff;
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        padding: 1.75rem;
+        box-shadow: 0 2px 12px rgba(0,0,0,.04);
+    }
+
+    .cf-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 12px;
+        background: var(--g-soft);
+        color: var(--g);
+        display: grid;
+        place-items: center;
+        font-size: 1.4rem;
+    }
+
+    .cf .form-label {
+        font-weight: 500;
+        color: #555;
+        font-size: .9rem;
+    }
+
+    .cf .form-control {
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        background: #fcfbf9;
+        padding: .75rem .9rem;
+    }
+
+        .cf .form-control:focus {
+            border-color: var(--g);
+            box-shadow: 0 0 0 .2rem rgba(47,93,78,.12);
+        }
+
+    .cf-btn {
+        background: var(--g);
+        color: #fff;
+        border: none;
+        border-radius: 10px;
+        padding: .75rem 1.5rem;
+    }
+
+        .cf-btn:hover {
+            background: #244a3e;
+            color: #fff;
+        }
+</style>
+
+<div class="cf container-fluid py-4">
+
+    <div class="mb-4">
+        <h4 class="mb-1">Yeni Kategori Ekle</h4>
+        <p class="text-muted mb-0">
+            Projeleriniz için yeni bir kategori oluşturun.
+        </p>
+    </div>
+
+    <div class="cf-card">
+
+        <div class="d-flex align-items-center gap-3 mb-4">
+            <div class="cf-icon">
+                <i class="bi bi-tags"></i>
+            </div>
+
+            <div>
+                <h5 class="mb-1">Kategori Bilgileri</h5>
+                <small class="text-muted">
+                    Kategori adı ve filtre anahtarını belirleyin.
+                </small>
+            </div>
+        </div>
+
+        <form asp-area="Admin"
+              asp-controller="Category"
+              asp-action="CreateCategory"
+              method="post">
+
+            @Html.AntiForgeryToken()
+
+            <div asp-validation-summary="ModelOnly"
+                 class="text-danger mb-3">
+            </div>
+
+            <!-- Category Name -->
+            <div class="mb-4">
+                <label asp-for="CategoryName" class="form-label">
+                    Kategori Adı *
+                </label>
+
+                <input asp-for="CategoryName"
+                       class="form-control"
+                       maxlength="100"
+                       placeholder="Örn: Mobil Uygulamalar"
+                       required />
+
+                <span asp-validation-for="CategoryName"
+                      class="text-danger small"></span>
+            </div>
+
+            <!-- Filter Key -->
+            <div class="mb-4">
+                <label asp-for="FilterKey" class="form-label">
+                    Filtre Anahtarı *
+                </label>
+
+                <input asp-for="FilterKey"
+                       class="form-control"
+                       maxlength="50"
+                       placeholder="Örn: mobile"
+                       pattern="[a-z0-9]+(-[a-z0-9]+)*"
+                       required />
+
+                <span asp-validation-for="FilterKey"
+                      class="text-danger small"></span>
+
+                <div class="form-text mt-2">
+                    <i class="bi bi-info-circle me-1"></i>
+                    Küçük harf, rakam ve tire kullanabilirsiniz.
+                    Boşluk ve Türkçe karakter kullanmayın.
+                    Örnek: web, ai, microservices, test-automation.
+                </div>
+            </div>
+
+            <div class="alert alert-light border mb-4">
+                <div class="fw-semibold small mb-1">
+                    <i class="bi bi-lightbulb me-1"></i>
+                    Filtre anahtarı ne işe yarar?
+                </div>
+
+                <div class="text-muted small">
+                    Ana sayfadaki proje kategorilerini filtrelemek için
+                    kullanılır. Her kategori için benzersiz olmalıdır.
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-end flex-wrap gap-2">
+
+                <a asp-area="Admin"
+                   asp-controller="Category"
+                   asp-action="CategoryList"
+                   class="btn btn-light px-4">
+                    Vazgeç
+                </a>
+
+                <button type="submit" class="cf-btn">
+                    <i class="bi bi-check-circle me-1"></i>
+                    Kategoriyi Kaydet
+                </button>
+
+            </div>
+
+        </form>
+    </div>
+</div>

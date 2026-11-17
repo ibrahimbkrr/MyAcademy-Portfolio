@@ -1,0 +1,913 @@
+﻿@model MyAcademy_PortfolioProject.Areas.Admin.Models.AboutFormViewModel
+
+@{
+    ViewData["Title"] = "Hakkımda Yönetimi";
+    Layout = "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
+
+    var hasImage = !string.IsNullOrWhiteSpace(Model.ExistingImageUrl);
+    var hasCv = !string.IsNullOrWhiteSpace(Model.ExistingCvUrl);
+}
+
+<style>
+    .about-admin {
+        --about-green: #2f5d4e;
+        --about-green-soft: #e7efe9;
+        --about-border: #ebe8e1;
+        --about-muted: #8a8a85;
+    }
+
+        .about-admin .about-card {
+            background: #fff;
+            border: 1px solid var(--about-border);
+            border-radius: 16px;
+            padding: 1.75rem;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, .04);
+            height: 100%;
+        }
+
+        .about-admin .about-card-heading {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 24px;
+        }
+
+        .about-admin .about-card-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            background: var(--about-green-soft);
+            color: var(--about-green);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            flex-shrink: 0;
+        }
+
+        .about-admin .about-card-heading h5 {
+            margin: 0 0 4px;
+            font-weight: 600;
+        }
+
+        .about-admin .about-card-heading small {
+            color: var(--about-muted);
+        }
+
+        .about-admin .section-label {
+            color: #92928c;
+            font-size: .76rem;
+            font-weight: 700;
+            letter-spacing: .08em;
+            text-transform: uppercase;
+            margin-bottom: 16px;
+        }
+
+        .about-admin .form-label {
+            color: #555;
+            font-size: .88rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .about-admin .form-control {
+            background: #fcfbf9;
+            border: 1px solid var(--about-border);
+            border-radius: 10px;
+            padding: 12px 14px;
+        }
+
+            .about-admin .form-control:focus {
+                background: #fff;
+                border-color: var(--about-green);
+                box-shadow: 0 0 0 .2rem rgba(47, 93, 78, .12);
+            }
+
+        .about-admin textarea {
+            resize: vertical;
+            min-height: 145px;
+        }
+
+        .about-admin .field-validation-error {
+            display: block;
+            margin-top: 6px;
+            font-size: .82rem;
+        }
+
+        .about-admin .profile-preview {
+            background: #fafbf9;
+            border: 1px solid var(--about-border);
+            border-radius: 14px;
+            overflow: hidden;
+            text-align: center;
+            padding: 16px;
+        }
+
+        .about-admin .profile-image {
+            display: block;
+            width: 100%;
+            max-height: 300px;
+            object-fit: contain;
+            border-radius: 10px;
+            background: #f5f5f2;
+        }
+
+        .about-admin .empty-image {
+            min-height: 220px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            background: #f5f5f2;
+            color: #96968f;
+            border-radius: 10px;
+        }
+
+        .about-admin .upload-box {
+            border: 2px dashed #cddbd0;
+            background: #fafcfb;
+            border-radius: 14px;
+            padding: 18px;
+        }
+
+        .about-admin .upload-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            background: var(--about-green-soft);
+            color: var(--about-green);
+            display: grid;
+            place-items: center;
+            font-size: 1.4rem;
+            margin: 0 auto 12px;
+        }
+
+        .about-admin .stat-edit-card {
+            background: #fcfbf9;
+            border: 1px solid var(--about-border);
+            border-radius: 12px;
+            padding: 16px;
+            height: 100%;
+        }
+
+        .about-admin .stat-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 28px;
+            height: 28px;
+            background: var(--about-green-soft);
+            color: var(--about-green);
+            border-radius: 8px;
+            font-size: .8rem;
+            font-weight: 700;
+        }
+
+        .about-admin .cv-current {
+            border: 1px solid var(--about-border);
+            background: #fcfbf9;
+            border-radius: 12px;
+            padding: 15px;
+        }
+
+        .about-admin .cv-icon {
+            width: 44px;
+            height: 44px;
+            background: #f8e8e6;
+            color: #b8453b;
+            border-radius: 10px;
+            display: grid;
+            place-items: center;
+            font-size: 1.35rem;
+            flex-shrink: 0;
+        }
+
+        .about-admin .save-btn {
+            background: var(--about-green);
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            padding: 12px 22px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+            .about-admin .save-btn:hover {
+                background: #244a3e;
+                color: #fff;
+            }
+
+            .about-admin .save-btn:disabled {
+                opacity: .7;
+                cursor: not-allowed;
+            }
+
+        .about-admin .preview-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: #555;
+            text-decoration: none;
+            background: #fff;
+            border: 1px solid var(--about-border);
+            border-radius: 10px;
+            padding: 11px 18px;
+        }
+
+            .about-admin .preview-btn:hover {
+                background: #f5f3ee;
+                color: #333;
+            }
+
+        .about-admin .info-note {
+            background: #f7faf8;
+            border: 1px solid #dce8df;
+            color: #557366;
+            border-radius: 10px;
+            padding: 12px 15px;
+            font-size: .84rem;
+        }
+
+    @@media (max-width: 767px) {
+        .about-admin .about-card {
+            padding: 1.25rem;
+        }
+    }
+</style>
+
+<div class="about-admin container-fluid py-4">
+
+    <!-- PAGE HEADER -->
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
+
+        <div>
+            <h4 class="mb-1">Hakkımda Yönetimi</h4>
+            <p class="text-muted mb-0">
+                Profil bilgilerinizi, tanıtım metinlerinizi, istatistiklerinizi
+                ve özgeçmişinizi buradan güncelleyebilirsiniz.
+            </p>
+        </div>
+
+        <a asp-area=""
+           asp-controller="Default"
+           asp-action="Index"
+           target="_blank"
+           rel="noopener noreferrer"
+           class="preview-btn">
+
+            <i class="bi bi-box-arrow-up-right"></i>
+            Siteyi Önizle
+        </a>
+    </div>
+
+    <!-- SUCCESS MESSAGE -->
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show"
+             role="alert">
+
+            <i class="bi bi-check-circle-fill me-2"></i>
+            @TempData["SuccessMessage"]
+
+            <button type="button"
+                    class="btn-close"
+                    data-bs-dismiss="alert"
+                    aria-label="Kapat">
+            </button>
+        </div>
+    }
+
+    <!-- ABOUT FORM -->
+    <form asp-area="Admin"
+          asp-controller="About"
+          asp-action="EditAbout"
+          method="post"
+          enctype="multipart/form-data"
+          id="editAboutForm">
+
+        @Html.AntiForgeryToken()
+
+        <input asp-for="AboutId" type="hidden" />
+
+        <div asp-validation-summary="ModelOnly"
+             class="alert alert-danger"
+             id="aboutValidationSummary"
+             role="alert"
+             hidden="@(ViewData.ModelState.ErrorCount == 0)">
+        </div>
+
+        <div class="row g-4">
+
+            <!-- LEFT COLUMN -->
+            <div class="col-xl-8">
+
+                <!-- PERSONAL INFORMATION -->
+                <div class="about-card mb-4">
+
+                    <div class="about-card-heading">
+                        <div class="about-card-icon">
+                            <i class="bi bi-person-vcard"></i>
+                        </div>
+
+                        <div>
+                            <h5>Profil Bilgileri</h5>
+                            <small>
+                                Ana sayfada görüntülenen kişisel bilgileriniz
+                            </small>
+                        </div>
+                    </div>
+
+                    <div class="row g-3">
+
+                        <div class="col-md-6">
+                            <label asp-for="Name" class="form-label">
+                                Ad Soyad *
+                            </label>
+
+                            <input asp-for="Name"
+                                   class="form-control"
+                                   maxlength="150"
+                                   placeholder="Adınızı ve soyadınızı giriniz"
+                                   required />
+
+                            <span asp-validation-for="Name"
+                                  class="text-danger"></span>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="JobTitle" class="form-label">
+                                Meslek / Unvan
+                            </label>
+
+                            <input asp-for="JobTitle"
+                                   class="form-control"
+                                   maxlength="150"
+                                   placeholder="Örn: Yazılım Mühendisi" />
+
+                            <span asp-validation-for="JobTitle"
+                                  class="text-danger"></span>
+                        </div>
+
+                        <div class="col-12">
+                            <label asp-for="Location" class="form-label">
+                                Konum
+                            </label>
+
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="bi bi-geo-alt"></i>
+                                </span>
+
+                                <input asp-for="Location"
+                                       class="form-control"
+                                       maxlength="150"
+                                       placeholder="Örn: Elazığ, Türkiye" />
+                            </div>
+
+                            <span asp-validation-for="Location"
+                                  class="text-danger"></span>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!-- ABOUT CONTENT -->
+                <div class="about-card mb-4">
+
+                    <div class="about-card-heading">
+                        <div class="about-card-icon">
+                            <i class="bi bi-file-text"></i>
+                        </div>
+
+                        <div>
+                            <h5>Hakkımda Metinleri</h5>
+                            <small>
+                                Ziyaretçilere kendinizi tanıttığınız bölüm
+                            </small>
+                        </div>
+                    </div>
+
+                    <!-- SECTION LABEL -->
+                    <div class="mb-4">
+                        <label asp-for="SectionLabel" class="form-label">
+                            Bölüm Etiketi
+                        </label>
+
+                        <input asp-for="SectionLabel"
+                               class="form-control"
+                               maxlength="150"
+                               placeholder="Örn: BENİ TANIYIN" />
+
+                        <span asp-validation-for="SectionLabel"
+                              class="text-danger"></span>
+                    </div>
+
+                    <!-- TITLE -->
+                    <div class="mb-4">
+                        <label asp-for="Title" class="form-label">
+                            Bölüm Başlığı *
+                        </label>
+
+                        <input asp-for="Title"
+                               class="form-control"
+                               maxlength="250"
+                               placeholder="Hakkımda bölümünün başlığı"
+                               required />
+
+                        <span asp-validation-for="Title"
+                              class="text-danger"></span>
+                    </div>
+
+                    <!-- DESCRIPTION 1 -->
+                    <div class="mb-4">
+                        <label asp-for="Description1" class="form-label">
+                            Birinci Açıklama
+                        </label>
+
+                        <textarea asp-for="Description1"
+                                  class="form-control"
+                                  rows="5"
+                                  maxlength="4000"
+                                  placeholder="Kendinizi ve uzmanlık alanlarınızı anlatın..."></textarea>
+
+                        <span asp-validation-for="Description1"
+                              class="text-danger"></span>
+                    </div>
+
+                    <!-- DESCRIPTION 2 -->
+                    <div class="mb-2">
+                        <label asp-for="Description2" class="form-label">
+                            İkinci Açıklama
+                        </label>
+
+                        <textarea asp-for="Description2"
+                                  class="form-control"
+                                  rows="5"
+                                  maxlength="4000"
+                                  placeholder="Çalışma yaklaşımınızı ve hedeflerinizi anlatın..."></textarea>
+
+                        <span asp-validation-for="Description2"
+                              class="text-danger"></span>
+                    </div>
+
+                    <div class="info-note mt-3">
+                        <i class="bi bi-info-circle me-1"></i>
+                        İki açıklama alanı, Hakkımda bölümünde ayrı
+                        paragraflar olarak kullanılabilir.
+                    </div>
+
+                </div>
+
+                <!-- STATISTICS -->
+                <div class="about-card">
+
+                    <div class="about-card-heading">
+                        <div class="about-card-icon">
+                            <i class="bi bi-bar-chart-line"></i>
+                        </div>
+
+                        <div>
+                            <h5>İstatistikler</h5>
+                            <small>
+                                Hakkımda bölümünde kullanılan üç istatistik kartı
+                            </small>
+                        </div>
+                    </div>
+
+                    <div class="row g-3">
+
+                        <!-- STAT 1 -->
+                        <div class="col-md-4">
+                            <div class="stat-edit-card">
+
+                                <div class="d-flex align-items-center gap-2 mb-3">
+                                    <span class="stat-number">1</span>
+                                    <strong class="small">İstatistik</strong>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label asp-for="Stat1Value" class="form-label">
+                                        Değer
+                                    </label>
+
+                                    <input asp-for="Stat1Value"
+                                           class="form-control"
+                                           maxlength="50"
+                                           placeholder="Örn: 5+" />
+
+                                    <span asp-validation-for="Stat1Value"
+                                          class="text-danger"></span>
+                                </div>
+
+                                <div>
+                                    <label asp-for="Stat1Label" class="form-label">
+                                        Açıklama
+                                    </label>
+
+                                    <input asp-for="Stat1Label"
+                                           class="form-control"
+                                           maxlength="100"
+                                           placeholder="Örn: Yıllık Deneyim" />
+
+                                    <span asp-validation-for="Stat1Label"
+                                          class="text-danger"></span>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <!-- STAT 2 -->
+                        <div class="col-md-4">
+                            <div class="stat-edit-card">
+
+                                <div class="d-flex align-items-center gap-2 mb-3">
+                                    <span class="stat-number">2</span>
+                                    <strong class="small">İstatistik</strong>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label asp-for="Stat2Value" class="form-label">
+                                        Değer
+                                    </label>
+
+                                    <input asp-for="Stat2Value"
+                                           class="form-control"
+                                           maxlength="50"
+                                           placeholder="Örn: 20+" />
+
+                                    <span asp-validation-for="Stat2Value"
+                                          class="text-danger"></span>
+                                </div>
+
+                                <div>
+                                    <label asp-for="Stat2Label" class="form-label">
+                                        Açıklama
+                                    </label>
+
+                                    <input asp-for="Stat2Label"
+                                           class="form-control"
+                                           maxlength="100"
+                                           placeholder="Örn: Tamamlanan Proje" />
+
+                                    <span asp-validation-for="Stat2Label"
+                                          class="text-danger"></span>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <!-- STAT 3 -->
+                        <div class="col-md-4">
+                            <div class="stat-edit-card">
+
+                                <div class="d-flex align-items-center gap-2 mb-3">
+                                    <span class="stat-number">3</span>
+                                    <strong class="small">İstatistik</strong>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label asp-for="Stat3Value" class="form-label">
+                                        Değer
+                                    </label>
+
+                                    <input asp-for="Stat3Value"
+                                           class="form-control"
+                                           maxlength="50"
+                                           placeholder="Örn: %100" />
+
+                                    <span asp-validation-for="Stat3Value"
+                                          class="text-danger"></span>
+                                </div>
+
+                                <div>
+                                    <label asp-for="Stat3Label" class="form-label">
+                                        Açıklama
+                                    </label>
+
+                                    <input asp-for="Stat3Label"
+                                           class="form-control"
+                                           maxlength="100"
+                                           placeholder="Örn: Öğrenme Motivasyonu" />
+
+                                    <span asp-validation-for="Stat3Label"
+                                          class="text-danger"></span>
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- RIGHT COLUMN -->
+            <div class="col-xl-4">
+
+                <!-- PROFILE IMAGE -->
+                <div class="about-card mb-4">
+
+                    <div class="about-card-heading">
+                        <div class="about-card-icon">
+                            <i class="bi bi-image"></i>
+                        </div>
+
+                        <div>
+                            <h5>Profil Fotoğrafı</h5>
+                            <small>Mevcut veya yeni fotoğrafınız</small>
+                        </div>
+                    </div>
+
+                    <div class="profile-preview mb-3">
+
+                        @if (hasImage)
+                        {
+                            <img src="@Model.ExistingImageUrl"
+                                 id="currentAboutImage"
+                                 alt="Mevcut profil fotoğrafı"
+                                 class="profile-image" />
+                        }
+                        else
+                        {
+                            <div id="emptyAboutImage"
+                                 class="empty-image">
+
+                                <i class="bi bi-person-bounding-box fs-1"></i>
+                                <span>Henüz profil fotoğrafı bulunmuyor.</span>
+                            </div>
+                        }
+
+                        <div id="newAboutImageContainer"
+                             class="d-none mt-3">
+
+                            <img id="newAboutImagePreview"
+                                 class="profile-image"
+                                 alt="Yeni profil fotoğrafı önizlemesi" />
+
+                            <small class="text-success d-block mt-2">
+                                Yeni seçilen fotoğraf
+                            </small>
+                        </div>
+
+                    </div>
+
+                    <div class="upload-box">
+
+                        <div class="upload-icon">
+                            <i class="bi bi-cloud-arrow-up"></i>
+                        </div>
+
+                        <label asp-for="ImageFile"
+                               class="form-label d-block text-center">
+                            Yeni Profil Fotoğrafı
+                        </label>
+
+                        <input asp-for="ImageFile"
+                               type="file"
+                               class="form-control"
+                               accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp" />
+
+                        <span asp-validation-for="ImageFile"
+                              class="text-danger"></span>
+
+                        <small class="text-muted d-block mt-2">
+                            JPG, JPEG, PNG veya WEBP · En fazla 5 MB.
+                        </small>
+
+                        <small id="selectedAboutImageName"
+                               class="text-muted d-block mt-2">
+                            Yeni fotoğraf seçilmedi.
+                        </small>
+
+                    </div>
+
+                    <div class="info-note mt-3">
+                        <i class="bi bi-shield-check me-1"></i>
+                        Yeni fotoğraf yüklemezseniz mevcut fotoğraf korunur.
+                    </div>
+
+                </div>
+
+                <!-- CV MANAGEMENT -->
+                <div class="about-card">
+
+                    <div class="about-card-heading">
+                        <div class="about-card-icon">
+                            <i class="bi bi-file-earmark-person"></i>
+                        </div>
+
+                        <div>
+                            <h5>Özgeçmiş Yönetimi</h5>
+                            <small>CV dosyasını görüntüleyin veya değiştirin</small>
+                        </div>
+                    </div>
+
+                    @if (hasCv)
+                    {
+                        <div class="cv-current mb-4">
+
+                            <div class="d-flex align-items-center gap-3">
+
+                                <div class="cv-icon">
+                                    <i class="bi bi-file-earmark-pdf"></i>
+                                </div>
+
+                                <div class="flex-grow-1" style="min-width:0;">
+                                    <div class="fw-semibold small">
+                                        Mevcut Özgeçmiş
+                                    </div>
+
+                                    <small class="text-muted">
+                                        PDF dosyası
+                                    </small>
+                                </div>
+
+                                <a href="@Model.ExistingCvUrl"
+                                   target="_blank"
+                                   rel="noopener noreferrer"
+                                   class="btn btn-outline-secondary btn-sm"
+                                   title="Özgeçmişi Aç">
+
+                                    <i class="bi bi-box-arrow-up-right"></i>
+                                </a>
+
+                            </div>
+
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="alert alert-light border small mb-4">
+                            <i class="bi bi-file-earmark-x me-1"></i>
+                            Henüz CV dosyası yüklenmedi.
+                        </div>
+                    }
+
+                    <div class="upload-box">
+
+                        <div class="upload-icon">
+                            <i class="bi bi-file-earmark-arrow-up"></i>
+                        </div>
+
+                        <label asp-for="CvFile"
+                               class="form-label d-block text-center">
+                            Yeni CV Yükle
+                        </label>
+
+                        <input asp-for="CvFile"
+                               type="file"
+                               class="form-control"
+                               accept=".pdf,application/pdf" />
+
+                        <span asp-validation-for="CvFile"
+                              class="text-danger"></span>
+
+                        <small class="text-muted d-block mt-2">
+                            Yalnızca PDF · En fazla 10 MB.
+                        </small>
+
+                        <small id="selectedCvName"
+                               class="text-muted d-block mt-2">
+                            Yeni CV dosyası seçilmedi.
+                        </small>
+
+                    </div>
+
+                    <div class="info-note mt-3">
+                        <i class="bi bi-info-circle me-1"></i>
+                        Yeni CV seçmezseniz mevcut özgeçmiş bağlantısı korunur.
+                    </div>
+
+                    <!-- SAVE ACTIONS -->
+                    <div class="d-grid gap-2 mt-4">
+
+                        <button type="submit"
+                                class="save-btn"
+                                id="saveAboutButton">
+
+                            <i class="bi bi-check-circle me-1"></i>
+                            Değişiklikleri Kaydet
+                        </button>
+
+                        <a asp-area=""
+                           asp-controller="Default"
+                           asp-action="Index"
+                           target="_blank"
+                           rel="noopener noreferrer"
+                           class="preview-btn justify-content-center">
+
+                            <i class="bi bi-eye"></i>
+                            Portfolyoyu Görüntüle
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </form>
+
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+
+        const form = document.getElementById("editAboutForm");
+        const imageInput = document.getElementById("ImageFile");
+        const cvInput = document.getElementById("CvFile");
+        const imageContainer = document.getElementById("newAboutImageContainer");
+        const imagePreview = document.getElementById("newAboutImagePreview");
+        const selectedImageName = document.getElementById("selectedAboutImageName");
+        const selectedCvName = document.getElementById("selectedCvName");
+        const saveButton = document.getElementById("saveAboutButton");
+
+        let imageObjectUrl = null;
+
+        // ==================== IMAGE PREVIEW ====================
+
+        if (imageInput) {
+            imageInput.addEventListener("change", function () {
+
+                if (imageObjectUrl) {
+                    URL.revokeObjectURL(imageObjectUrl);
+                    imageObjectUrl = null;
+                }
+
+                const file = this.files && this.files[0];
+
+                if (!file) {
+                    imagePreview.removeAttribute("src");
+                    imageContainer.classList.add("d-none");
+                    selectedImageName.textContent = "Yeni fotoğraf seçilmedi.";
+                    return;
+                }
+
+                selectedImageName.textContent = file.name;
+
+                const acceptedTypes = [
+                    "image/jpeg",
+                    "image/png",
+                    "image/webp"
+                ];
+
+                if (!acceptedTypes.includes(file.type)) {
+                    imagePreview.removeAttribute("src");
+                    imageContainer.classList.add("d-none");
+                    return;
+                }
+
+                imageObjectUrl = URL.createObjectURL(file);
+
+                imagePreview.src = imageObjectUrl;
+                imageContainer.classList.remove("d-none");
+            });
+        }
+
+        // ==================== CV FILE NAME ====================
+
+        if (cvInput) {
+            cvInput.addEventListener("change", function () {
+
+                const file = this.files && this.files[0];
+
+                selectedCvName.textContent = file
+                    ? file.name
+                    : "Yeni CV dosyası seçilmedi.";
+            });
+        }
+
+        // ==================== SUBMIT ====================
+
+        if (form && saveButton) {
+            form.addEventListener("submit", function (event) {
+
+                if (!form.checkValidity()) {
+                    return;
+                }
+
+                // Native validation passed.
+                // Server-side validation remains authoritative.
+                saveButton.disabled = true;
+
+                saveButton.innerHTML =
+                    '<span class="spinner-border spinner-border-sm me-2"></span>' +
+                    'Kaydediliyor...';
+            });
+        }
+
+        // ==================== CLEANUP ====================
+
+        window.addEventListener("pagehide", function () {
+            if (imageObjectUrl) {
+                URL.revokeObjectURL(imageObjectUrl);
+            }
+        });
+
+    });
+</script>

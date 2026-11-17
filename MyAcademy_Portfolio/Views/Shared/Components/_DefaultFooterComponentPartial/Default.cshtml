@@ -1,0 +1,81 @@
+@using MyAcademy_PortfolioProject.Infrastructure
+@model MyAcademy_PortfolioProject.Models.FooterViewModel
+
+<footer class="site-footer">
+    <div class="container">
+
+        <div class="d-flex flex-column flex-md-row align-items-center justify-content-between pb-4 border-bottom gap-3">
+
+            <!-- Brand -->
+            <div>
+                <a class="navbar-brand-custom" href="#home">
+                    <span>@Model.Footer.BrandName</span>
+                </a>
+
+                <p class="text-muted small mb-0 mt-1">
+                    @Model.Footer.Description
+                </p>
+            </div>
+
+            <!-- Quick Links -->
+            <div class="d-flex gap-3">
+
+                <a href="#home"
+                   class="text-decoration-none text-muted small fw-medium">
+                    Ana Sayfa
+                </a>
+
+                <a href="#about"
+                   class="text-decoration-none text-muted small fw-medium">
+                    Hakkımda
+                </a>
+
+                <a href="#projects"
+                   class="text-decoration-none text-muted small fw-medium">
+                    Projelerim
+                </a>
+
+                <a href="#contact"
+                   class="text-decoration-none text-muted small fw-medium">
+                    İletişim
+                </a>
+
+            </div>
+
+            <!-- Back to Top -->
+            <button class="back-to-top-btn"
+                    id="backToTop"
+                    title="Yukarı Çık">
+                <i class="bi bi-arrow-up"></i>
+            </button>
+
+        </div>
+
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-center pt-3 gap-2">
+
+            <!-- Copyright -->
+            <div class="text-muted small">
+                © @DateTime.Now.Year @Model.Footer.CopyrightText
+            </div>
+
+            <!-- Social Media -->
+            <div class="d-flex gap-2">
+
+                @foreach (var item in Model.SocialMedias.Where(x => PublicLinks.IsWeb(x.Url)))
+                {
+                    <a href="@item.Url"
+                       target="@(item.Url.StartsWith("mailto:", StringComparison.OrdinalIgnoreCase) ? "_self" : "_blank")"
+                       rel="noopener noreferrer"
+                       class="text-muted small text-decoration-none me-2">
+
+                        <i class="@item.IconClass"></i>
+                        @item.Platform
+
+                    </a>
+                }
+
+            </div>
+
+        </div>
+    </div>
+</footer>

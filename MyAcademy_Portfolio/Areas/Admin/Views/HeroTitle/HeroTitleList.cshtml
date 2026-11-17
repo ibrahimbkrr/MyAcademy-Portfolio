@@ -1,0 +1,527 @@
+﻿@model List<MyAcademy_PortfolioProject.Entities.HeroTitle>
+
+@{
+    ViewData["Title"] = "Hareketli Başlık Yönetimi";
+    Layout = "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
+
+    var totalCount = Model.Count;
+    var activeCount = Model.Count(x => x.IsActive);
+    var passiveCount = Model.Count(x => !x.IsActive);
+}
+
+<style>
+    .hero-title-admin {
+        --ht-primary: #2f5d4e;
+        --ht-soft: #e7efe9;
+        --ht-border: #ebe8e1;
+    }
+
+        .hero-title-admin .ht-card,
+        .hero-title-admin .ht-stat {
+            background: #fff;
+            border: 1px solid var(--ht-border);
+            border-radius: 15px;
+            box-shadow: 0 2px 12px rgba(0,0,0,.04);
+        }
+
+        .hero-title-admin .ht-stat {
+            padding: 22px;
+            height: 100%;
+        }
+
+        .hero-title-admin .ht-stat-label {
+            color: #888;
+            font-size: .87rem;
+        }
+
+        .hero-title-admin .ht-stat-value {
+            font-size: 1.9rem;
+            font-weight: 700;
+            color: #303630;
+            margin-top: 8px;
+        }
+
+        .hero-title-admin .ht-stat-icon {
+            display: grid;
+            place-items: center;
+            width: 46px;
+            height: 46px;
+            border-radius: 12px;
+            background: var(--ht-soft);
+            color: var(--ht-primary);
+            font-size: 1.25rem;
+        }
+
+        .hero-title-admin .ht-card {
+            padding: 24px;
+        }
+
+        .hero-title-admin .ht-create-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 11px 18px;
+            background: var(--ht-primary);
+            color: white;
+            border-radius: 10px;
+            text-decoration: none;
+            border: 0;
+            font-weight: 600;
+        }
+
+            .hero-title-admin .ht-create-btn:hover {
+                background: #244a3e;
+                color: white;
+            }
+
+        .hero-title-admin .ht-search,
+        .hero-title-admin .ht-select {
+            border: 1px solid var(--ht-border);
+            background: #fcfbf9;
+            border-radius: 10px;
+            padding: 10px 13px;
+        }
+
+            .hero-title-admin .ht-search:focus,
+            .hero-title-admin .ht-select:focus {
+                outline: none;
+                border-color: var(--ht-primary);
+                box-shadow: 0 0 0 .2rem rgba(47,93,78,.12);
+            }
+
+        .hero-title-admin .ht-order {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 38px;
+            padding: 7px 10px;
+            background: #f3f2ee;
+            border-radius: 8px;
+            font-weight: 600;
+        }
+
+        .hero-title-admin .ht-title-icon {
+            display: grid;
+            place-items: center;
+            width: 42px;
+            height: 42px;
+            flex-shrink: 0;
+            border-radius: 11px;
+            background: var(--ht-soft);
+            color: var(--ht-primary);
+            font-size: 1.2rem;
+        }
+
+        .hero-title-admin .ht-status-active {
+            background: #e7f2e9;
+            color: #287348;
+        }
+
+        .hero-title-admin .ht-status-passive {
+            background: #f1f1ef;
+            color: #777;
+        }
+
+        .hero-title-admin .ht-status-active,
+        .hero-title-admin .ht-status-passive {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: .78rem;
+            font-weight: 600;
+        }
+
+        .hero-title-admin .table thead th {
+            color: #777;
+            font-size: .82rem;
+            font-weight: 600;
+            background: #faf9f6;
+            padding: 15px;
+            border-bottom: 1px solid var(--ht-border);
+            white-space: nowrap;
+        }
+
+        .hero-title-admin .table tbody td {
+            padding: 17px 15px;
+            border-color: #f1eee8;
+        }
+
+        .hero-title-admin .ht-empty {
+            padding: 55px 20px;
+            text-align: center;
+            color: #888;
+        }
+
+            .hero-title-admin .ht-empty i {
+                font-size: 2.6rem;
+                color: #a9b9ae;
+            }
+
+        .hero-title-admin .ht-note {
+            background: #f7faf8;
+            border: 1px solid #dce9e0;
+            border-radius: 10px;
+            color: #557366;
+            padding: 14px;
+            font-size: .86rem;
+        }
+</style>
+
+<div class="hero-title-admin container-fluid py-4">
+
+    <!-- HEADER -->
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
+
+        <div>
+            <h4 class="mb-1">Hareketli Başlık Yönetimi</h4>
+            <p class="text-muted mb-0">
+                Hero bölümündeki typewriter animasyonunun
+                başlıklarını yönetin.
+            </p>
+        </div>
+
+        <div class="d-flex gap-2 flex-wrap">
+
+            <a asp-area="Admin"
+               asp-controller="HeroSection"
+               asp-action="EditHero"
+               class="btn btn-outline-secondary">
+
+                <i class="bi bi-arrow-left me-1"></i>
+                Hero Yönetimi
+            </a>
+
+            <a asp-area="Admin"
+               asp-controller="HeroTitle"
+               asp-action="CreateHeroTitle"
+               class="ht-create-btn">
+
+                <i class="bi bi-plus-lg"></i>
+                Yeni Başlık Ekle
+            </a>
+
+        </div>
+    </div>
+
+    <!-- MESSAGES -->
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show"
+             role="alert">
+
+            <i class="bi bi-check-circle-fill me-2"></i>
+            @TempData["SuccessMessage"]
+
+            <button type="button"
+                    class="btn-close"
+                    data-bs-dismiss="alert"
+                    aria-label="Kapat"></button>
+        </div>
+    }
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show"
+             role="alert">
+
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+            @TempData["ErrorMessage"]
+
+            <button type="button"
+                    class="btn-close"
+                    data-bs-dismiss="alert"
+                    aria-label="Kapat"></button>
+        </div>
+    }
+
+    <!-- STATISTICS -->
+    <div class="row g-3 mb-4">
+
+        <div class="col-md-4">
+            <div class="ht-stat">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <div class="ht-stat-label">Toplam Başlık</div>
+                        <div class="ht-stat-value">@totalCount</div>
+                    </div>
+
+                    <div class="ht-stat-icon">
+                        <i class="bi bi-type"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="ht-stat">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <div class="ht-stat-label">Aktif Başlık</div>
+                        <div class="ht-stat-value">@activeCount</div>
+                    </div>
+
+                    <div class="ht-stat-icon">
+                        <i class="bi bi-check-circle"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="ht-stat">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <div class="ht-stat-label">Pasif Başlık</div>
+                        <div class="ht-stat-value">@passiveCount</div>
+                    </div>
+
+                    <div class="ht-stat-icon">
+                        <i class="bi bi-eye-slash"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- TABLE CARD -->
+    <div class="ht-card">
+
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
+            <div>
+                <h5 class="mb-1">Başlık Listesi</h5>
+                <small class="text-muted">
+                    Başlıklar gösterim sırasına göre listelenir.
+                </small>
+            </div>
+
+            <div class="d-flex gap-2 flex-wrap">
+
+                <input type="search"
+                       class="ht-search"
+                       id="heroTitleSearch"
+                       aria-label="Başlık ara"
+                       placeholder="Başlık ara..." />
+
+                <select id="heroTitleStatusFilter"
+                        class="ht-select"
+                        aria-label="Duruma göre filtrele">
+
+                    <option value="all">Tüm Durumlar</option>
+                    <option value="active">Aktif</option>
+                    <option value="passive">Pasif</option>
+                </select>
+
+            </div>
+        </div>
+
+        <div class="table-responsive">
+
+            <table class="table table-hover align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Başlık Metni</th>
+                        <th>Gösterim Sırası</th>
+                        <th>Durum</th>
+                        <th class="text-end">İşlemler</th>
+                    </tr>
+                </thead>
+
+                <tbody id="heroTitleTableBody">
+
+                    @foreach (var item in Model)
+                    {
+                        <tr class="hero-title-row"
+                            data-title="@item.Title"
+                            data-status="@(item.IsActive ? "active" : "passive")">
+
+                            <td>
+                                <span class="text-muted">
+                                    #@item.HeroTitleId
+                                </span>
+                            </td>
+
+                            <td>
+                                <div class="d-flex align-items-center gap-3">
+
+                                    <div class="ht-title-icon">
+                                        <i class="bi bi-cursor-text"></i>
+                                    </div>
+
+                                    <div>
+                                        <div class="fw-semibold">
+                                            @item.Title
+                                        </div>
+
+                                        <small class="text-muted">
+                                            Typewriter metni
+                                        </small>
+                                    </div>
+
+                                </div>
+                            </td>
+
+                            <td>
+                                <span class="ht-order">
+                                    @item.Order
+                                </span>
+                            </td>
+
+                            <td>
+                                @if (item.IsActive)
+                                {
+                                    <span class="ht-status-active">
+                                        <i class="bi bi-check-circle me-1"></i>
+                                        Aktif
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="ht-status-passive">
+                                        <i class="bi bi-eye-slash me-1"></i>
+                                        Pasif
+                                    </span>
+                                }
+                            </td>
+
+                            <td>
+                                <div class="d-flex gap-2 justify-content-end">
+
+                                    <a asp-area="Admin"
+                                       asp-controller="HeroTitle"
+                                       asp-action="UpdateHeroTitle"
+                                       asp-route-id="@item.HeroTitleId"
+                                       class="btn btn-warning btn-sm">
+
+                                        <i class="bi bi-pencil-square me-1"></i>
+                                        Düzenle
+                                    </a>
+
+                                    <form asp-area="Admin"
+                                          asp-controller="HeroTitle"
+                                          asp-action="DeleteHeroTitle"
+                                          asp-route-id="@item.HeroTitleId"
+                                          method="post"
+                                          onsubmit="return confirm('Bu hareketli başlığı kalıcı olarak silmek istiyor musunuz?');">
+
+                                        @Html.AntiForgeryToken()
+
+                                        <button type="submit"
+                                                class="btn btn-danger btn-sm">
+                                            <i class="bi bi-trash me-1"></i>
+                                            Sil
+                                        </button>
+
+                                    </form>
+
+                                </div>
+                            </td>
+
+                        </tr>
+                    }
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+        @if (!Model.Any())
+        {
+            <div class="ht-empty">
+                <i class="bi bi-type-h1"></i>
+
+                <h5 class="mt-3 text-dark">
+                    Henüz hareketli başlık eklenmemiş
+                </h5>
+
+                <p>İlk başlığınızı ekleyerek başlayabilirsiniz.</p>
+
+                <a asp-area="Admin"
+                   asp-controller="HeroTitle"
+                   asp-action="CreateHeroTitle"
+                   class="ht-create-btn">
+
+                    <i class="bi bi-plus-lg"></i>
+                    İlk Başlığı Ekle
+                </a>
+            </div>
+        }
+        else
+        {
+            <div id="heroTitleFilterEmpty"
+                 class="ht-empty d-none">
+
+                <i class="bi bi-search"></i>
+                <h5 class="mt-3 text-dark">Sonuç bulunamadı</h5>
+                <p>Arama veya filtre kriterlerini değiştirebilirsiniz.</p>
+            </div>
+        }
+
+        <div class="ht-note mt-4">
+
+            <i class="bi bi-info-circle me-1"></i>
+
+            Yalnızca aktif başlıklar ana sayfadaki animasyonda gösterilir.
+            Gösterim sırası küçük sayıdan büyük sayıya doğru uygulanır.
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+
+        const searchInput = document.getElementById("heroTitleSearch");
+        const statusFilter = document.getElementById("heroTitleStatusFilter");
+
+        const rows = Array.from(
+            document.querySelectorAll(".hero-title-row")
+        );
+
+        const empty = document.getElementById("heroTitleFilterEmpty");
+
+        function normalize(text) {
+            return (text || "")
+                .toLocaleLowerCase("tr-TR")
+                .trim();
+        }
+
+        function filterRows() {
+            const keyword = normalize(searchInput.value);
+            const selectedStatus = statusFilter.value;
+
+            let visibleCount = 0;
+
+            rows.forEach(function (row) {
+                const title = normalize(row.dataset.title);
+                const status = row.dataset.status;
+
+                const matchesSearch = title.includes(keyword);
+                const matchesStatus =
+                    selectedStatus === "all" ||
+                    status === selectedStatus;
+
+                const visible = matchesSearch && matchesStatus;
+
+                row.classList.toggle("d-none", !visible);
+
+                if (visible) visibleCount++;
+            });
+
+            if (empty) {
+                empty.classList.toggle(
+                    "d-none",
+                    visibleCount > 0
+                );
+            }
+        }
+
+        searchInput.addEventListener("input", filterRows);
+        statusFilter.addEventListener("change", filterRows);
+
+    });
+</script>

@@ -1,0 +1,76 @@
+﻿@model List<MyAcademy_PortfolioProject.Entities.SkillCategory>
+
+<section id="skills">
+    <div class="container">
+
+        <div class="section-header text-center mx-auto reveal-on-scroll" style="max-width: 680px;">
+            <div class="eyebrow-badge">
+                <i class="bi bi-stack"></i> TEKNOLOJİ YIĞINIM
+            </div>
+
+            <h2 class="section-title">
+                Kullandığım Teknolojiler ve Uzmanlık Alanlarım
+            </h2>
+
+            <p class="section-description mx-auto">
+                Bir fikrin hayata geçirilmesinden ölçeklenebilir bir yazılım ürününe dönüşmesine kadar farklı teknolojilerle çalışıyorum.
+            </p>
+        </div>
+
+        <div class="row g-4">
+
+            @foreach (var category in Model)
+            {
+                <div class="col-md-6 col-lg-4 reveal-on-scroll">
+                    <div class="skill-card h-100">
+
+                        <div class="skill-icon-box">
+                            <i class="@category.IconClass"></i>
+                        </div>
+
+                        <h3 class="h5 fw-bold mb-3">
+                            @category.CategoryName
+                        </h3>
+
+                        <p class="text-muted small mb-4">
+                            @category.Description
+                        </p>
+
+                        <div class="d-flex flex-column gap-2">
+
+                            @foreach (var skill in category.Skills)
+                            {
+                                <div class="skill-level-item">
+
+                                    <div class="d-flex align-items-center justify-content-between gap-2 mb-2">
+                                        <span class="tech-badge">
+                                            @skill.SkillName
+                                        </span>
+
+                                        <span class="small text-muted fw-semibold">
+                                            @skill.Level%
+                                        </span>
+                                    </div>
+
+                                    <div class="progress skill-progress">
+                                        <div class="progress-bar"
+                                             role="progressbar"
+                                             style="width: @(skill.Level)%; background-color: #91aa9b;"
+                                             aria-label="@skill.SkillName"
+                                             aria-valuenow="@skill.Level"
+                                             aria-valuemin="0"
+                                             aria-valuemax="100">
+                                        </div>
+                                    </div>
+
+                                </div>
+                            }
+
+                        </div>
+                    </div>
+                </div>
+            }
+
+        </div>
+    </div>
+</section>

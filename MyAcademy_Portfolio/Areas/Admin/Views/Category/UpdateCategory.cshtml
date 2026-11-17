@@ -1,0 +1,164 @@
+﻿@model MyAcademy_PortfolioProject.Areas.Admin.Models.CategoryUpdateViewModel
+
+@{
+    ViewData["Title"] = "Kategori Güncelle";
+    Layout = "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
+}
+
+<style>
+    .uc {
+        --g: #2f5d4e;
+        --g-soft: #e7efe9;
+        --line: #ebe8e1;
+    }
+
+    .uc-card {
+        max-width: 850px;
+        background: #fff;
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        padding: 1.75rem;
+        box-shadow: 0 2px 12px rgba(0,0,0,.04);
+    }
+
+    .uc-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 12px;
+        background: var(--g-soft);
+        color: var(--g);
+        display: grid;
+        place-items: center;
+        font-size: 1.4rem;
+    }
+
+    .uc .form-label {
+        font-weight: 500;
+        color: #555;
+        font-size: .9rem;
+    }
+
+    .uc .form-control {
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        background: #fcfbf9;
+        padding: .75rem .9rem;
+    }
+
+        .uc .form-control:focus {
+            border-color: var(--g);
+            box-shadow: 0 0 0 .2rem rgba(47,93,78,.12);
+        }
+
+    .uc-btn {
+        background: var(--g);
+        color: #fff;
+        border: none;
+        border-radius: 10px;
+        padding: .75rem 1.5rem;
+    }
+
+        .uc-btn:hover {
+            background: #244a3e;
+            color: #fff;
+        }
+</style>
+
+<div class="uc container-fluid py-4">
+
+    <div class="mb-4">
+        <h4 class="mb-1">Kategori Güncelleme</h4>
+        <p class="text-muted mb-0">
+            Mevcut kategori bilgilerini düzenleyebilirsiniz.
+        </p>
+    </div>
+
+    <div class="uc-card">
+
+        <div class="d-flex align-items-center gap-3 mb-4">
+            <div class="uc-icon">
+                <i class="bi bi-pencil-square"></i>
+            </div>
+
+            <div>
+                <h5 class="mb-1">Kategori Bilgileri</h5>
+                <small class="text-muted">
+                    #@Model.CategoryId numaralı kategoriyi düzenliyorsunuz.
+                </small>
+            </div>
+        </div>
+
+        <form asp-area="Admin"
+              asp-controller="Category"
+              asp-action="UpdateCategory"
+              method="post">
+
+            @Html.AntiForgeryToken()
+
+            <input type="hidden" asp-for="CategoryId" />
+
+            <div asp-validation-summary="ModelOnly"
+                 class="text-danger mb-3">
+            </div>
+
+            <!-- Category Name -->
+            <div class="mb-4">
+                <label asp-for="CategoryName" class="form-label">
+                    Kategori Adı *
+                </label>
+
+                <input asp-for="CategoryName"
+                       class="form-control"
+                       maxlength="100"
+                       required />
+
+                <span asp-validation-for="CategoryName"
+                      class="text-danger small"></span>
+            </div>
+
+            <!-- Filter Key -->
+            <div class="mb-4">
+                <label asp-for="FilterKey" class="form-label">
+                    Filtre Anahtarı *
+                </label>
+
+                <input asp-for="FilterKey"
+                       class="form-control"
+                       maxlength="50"
+                       pattern="[a-z0-9]+(-[a-z0-9]+)*"
+                       required />
+
+                <span asp-validation-for="FilterKey"
+                      class="text-danger small"></span>
+
+                <div class="form-text mt-2">
+                    Bu anahtar, ana sayfadaki proje filtreleme işlemlerinde kullanılır.
+                </div>
+            </div>
+
+            <div class="alert alert-warning border-0 mb-4">
+                <i class="bi bi-exclamation-triangle me-1"></i>
+                Filtre anahtarını değiştirirseniz,
+                ana sayfadaki proje filtrelerinin de yeni değerle
+                eşleşmesi gerekir.
+            </div>
+
+            <div class="d-flex justify-content-end flex-wrap gap-2">
+
+                <a asp-area="Admin"
+                   asp-controller="Category"
+                   asp-action="CategoryList"
+                   class="btn btn-light px-4">
+                    Vazgeç
+                </a>
+
+                <button type="submit" class="uc-btn">
+                    <i class="bi bi-check-circle me-1"></i>
+                    Değişiklikleri Kaydet
+                </button>
+
+            </div>
+
+        </form>
+    </div>
+</div>

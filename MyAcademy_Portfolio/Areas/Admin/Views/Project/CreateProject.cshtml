@@ -1,0 +1,532 @@
+﻿@model MyAcademy_PortfolioProject.Areas.Admin.Models.ProjectCreateViewModel
+
+@{
+    ViewData["Title"] = "Yeni Proje Ekle";
+    Layout = "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
+}
+
+<style>
+    .cp {
+        --g: #2f5d4e;
+        --g-soft: #e7efe9;
+        --line: #ebe8e1;
+        --muted: #8a8a85;
+    }
+
+    .cp-card {
+        background: #fff;
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        padding: 1.75rem;
+        height: 100%;
+        box-shadow: 0 2px 12px rgba(0,0,0,.04);
+    }
+
+    .cp-head {
+        display: flex;
+        align-items: center;
+        gap: .9rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .cp-icon {
+        width: 46px;
+        height: 46px;
+        border-radius: 12px;
+        background: var(--g-soft);
+        color: var(--g);
+        display: grid;
+        place-items: center;
+        font-size: 1.3rem;
+    }
+
+    .cp-head h4 {
+        margin: 0;
+        font-weight: 600;
+    }
+
+    .cp-head small {
+        color: var(--muted);
+    }
+
+    .cp .form-label {
+        font-size: .85rem;
+        font-weight: 500;
+        color: #6b6b66;
+        margin-bottom: .4rem;
+    }
+
+    .cp .form-control,
+    .cp .form-select {
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        padding: .7rem .9rem;
+        background: #fcfbf9;
+    }
+
+        .cp .form-control:focus,
+        .cp .form-select:focus {
+            border-color: var(--g);
+            background: #fff;
+            box-shadow: 0 0 0 .2rem rgba(47,93,78,.12);
+        }
+
+    .cp textarea {
+        resize: vertical;
+        min-height: 150px;
+    }
+
+    .cp-title {
+        font-size: .75rem;
+        letter-spacing: .08em;
+        text-transform: uppercase;
+        color: #9a9a94;
+        font-weight: 600;
+        margin-bottom: 1rem;
+    }
+
+    .cp-upload {
+        border: 2px dashed #cddbd0;
+        border-radius: 14px;
+        padding: 1.5rem;
+        text-align: center;
+        background: #fafcfb;
+    }
+
+    .cp-upload-icon {
+        width: 58px;
+        height: 58px;
+        display: grid;
+        place-items: center;
+        background: var(--g-soft);
+        color: var(--g);
+        border-radius: 14px;
+        font-size: 1.6rem;
+        margin: 0 auto 1rem;
+    }
+
+    .cp-image-preview {
+        width: 100%;
+        max-height: 220px;
+        object-fit: contain;
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        margin-top: 1rem;
+        background: #f8f9fa;
+    }
+
+    .cp-status {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: .9rem 1rem;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        background: #fcfbf9;
+    }
+
+        .cp-status .form-check-input {
+            width: 2.6em;
+            height: 1.35em;
+            cursor: pointer;
+        }
+
+            .cp-status .form-check-input:checked {
+                background-color: var(--g);
+                border-color: var(--g);
+            }
+
+    .cp-btn {
+        background: var(--g);
+        color: #fff;
+        border: none;
+        border-radius: 10px;
+        padding: .75rem;
+        font-weight: 500;
+        cursor: pointer;
+    }
+
+        .cp-btn:hover {
+            background: #244a3e;
+            color: #fff;
+        }
+
+    .cp-btn-light {
+        background: transparent;
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        padding: .75rem;
+        color: #555;
+    }
+
+        .cp-btn-light:hover {
+            background: #f5f3ee;
+        }
+
+    .cp .field-validation-error {
+        display: block;
+        font-size: .8rem;
+        margin-top: .35rem;
+    }
+</style>
+
+<div class="cp container-fluid py-4">
+
+    <!-- Page Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+        <div>
+            <h4 class="mb-1">Yeni Proje Ekle</h4>
+            <p class="text-muted mb-0">
+                Portfolyonuzda yayınlamak istediğiniz projenin bilgilerini girin.
+            </p>
+        </div>
+
+        <a asp-area="Admin"
+           asp-controller="Project"
+           asp-action="ProjectList"
+           class="cp-btn-light text-decoration-none">
+            <i class="bi bi-arrow-left me-1"></i>
+            Proje Listesine Dön
+        </a>
+    </div>
+
+    <!-- Project Form -->
+    <form asp-area="Admin"
+          asp-controller="Project"
+          asp-action="CreateProject"
+          method="post"
+          enctype="multipart/form-data">
+
+        @Html.AntiForgeryToken()
+
+        <div asp-validation-summary="ModelOnly"
+             class="alert alert-danger"
+             role="alert"
+             style="@(ViewData.ModelState.ErrorCount == 0 ? "display:none;" : "")">
+        </div>
+
+        <div class="row g-4">
+
+            <!-- LEFT COLUMN -->
+            <div class="col-xl-8 col-lg-7">
+
+                <div class="cp-card">
+
+                    <div class="cp-head">
+                        <div class="cp-icon">
+                            <i class="bi bi-folder-plus"></i>
+                        </div>
+
+                        <div>
+                            <h4>Proje Bilgileri</h4>
+                            <small>
+                                Projenizin temel bilgilerini doldurun.
+                            </small>
+                        </div>
+                    </div>
+
+                    <!-- Project Title -->
+                    <div class="mb-3">
+                        <label asp-for="ProjectTitle"
+                               class="form-label">
+                            Proje Adı *
+                        </label>
+
+                        <input asp-for="ProjectTitle"
+                               class="form-control"
+                               maxlength="150"
+                               placeholder="Örn: ASP.NET Core E-Ticaret Projesi"
+                               required />
+
+                        <span asp-validation-for="ProjectTitle"
+                              class="text-danger"></span>
+                    </div>
+
+                    <!-- Category -->
+                    <div class="mb-3">
+                        <label asp-for="CategoryId"
+                               class="form-label">
+                            Proje Kategorisi *
+                        </label>
+
+                        <select asp-for="CategoryId"
+                                asp-items="Model.Categories"
+                                class="form-select"
+                                required>
+
+                            <option value="0">
+                                Kategori seçiniz
+                            </option>
+
+                        </select>
+
+                        <span asp-validation-for="CategoryId"
+                              class="text-danger"></span>
+                    </div>
+
+                    <!-- Description -->
+                    <div class="mb-3">
+                        <label asp-for="Description"
+                               class="form-label">
+                            Proje Açıklaması *
+                        </label>
+
+                        <textarea asp-for="Description"
+                                  class="form-control"
+                                  rows="6"
+                                  maxlength="2000"
+                                  placeholder="Projenizin amacı, kullanılan mimari ve özelliklerini açıklayın..."
+                                  required></textarea>
+
+                        <span asp-validation-for="Description"
+                              class="text-danger"></span>
+                    </div>
+
+                    <!-- Technologies -->
+                    <div class="mb-4">
+                        <label asp-for="Technologies"
+                               class="form-label">
+                            Kullanılan Teknolojiler
+                        </label>
+
+                        <input asp-for="Technologies"
+                               class="form-control"
+                               placeholder="ASP.NET Core|Web API|SQL Server|Entity Framework Core" />
+
+                        <span asp-validation-for="Technologies"
+                              class="text-danger"></span>
+
+                        <small class="text-muted d-block mt-2">
+                            <i class="bi bi-info-circle me-1"></i>
+                            Teknolojileri | karakteriyle ayırın.
+                            Her teknoloji sitede ayrı bir etiket olarak görüntülenir.
+                        </small>
+                    </div>
+
+                    <hr class="my-4" />
+
+                    <div class="cp-title">
+                        Proje Bağlantıları
+                    </div>
+
+                    <!-- GitHub URL -->
+                    <div class="mb-3">
+                        <label asp-for="GithubUrl"
+                               class="form-label">
+                            GitHub Adresi
+                        </label>
+
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <i class="bi bi-github"></i>
+                            </span>
+
+                            <input asp-for="GithubUrl"
+                                   type="url"
+                                   class="form-control"
+                                   placeholder="https://github.com/kullanici/proje" />
+                        </div>
+
+                        <span asp-validation-for="GithubUrl"
+                              class="text-danger"></span>
+                    </div>
+
+                    <!-- Live URL -->
+                    <div class="mb-3">
+                        <label asp-for="LiveUrl"
+                               class="form-label">
+                            Canlı Proje Adresi
+                        </label>
+
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <i class="bi bi-box-arrow-up-right"></i>
+                            </span>
+
+                            <input asp-for="LiveUrl"
+                                   type="url"
+                                   class="form-control"
+                                   placeholder="https://projem.com" />
+                        </div>
+
+                        <span asp-validation-for="LiveUrl"
+                              class="text-danger"></span>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- RIGHT COLUMN -->
+            <div class="col-xl-4 col-lg-5">
+
+                <div class="cp-card d-flex flex-column">
+
+                    <div class="cp-title">
+                        Proje Görseli
+                    </div>
+
+                    <!-- Upload Area -->
+                    <div class="cp-upload mb-4">
+
+                        <div class="cp-upload-icon">
+                            <i class="bi bi-cloud-arrow-up"></i>
+                        </div>
+
+                        <p class="fw-semibold mb-2">
+                            Proje görseli yükleyin
+                        </p>
+
+                        <p class="text-muted small">
+                            JPG, PNG veya WEBP formatında,
+                            en fazla 5 MB büyüklüğünde görsel seçebilirsiniz.
+                        </p>
+
+                        <input asp-for="ImageFile"
+                               type="file"
+                               class="form-control"
+                               accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp" />
+
+                        <span asp-validation-for="ImageFile"
+                              class="text-danger"></span>
+
+                        <!-- Image Preview -->
+                        <img id="projectImagePreview"
+                             class="cp-image-preview d-none"
+                             alt="Proje görseli önizlemesi" />
+
+                        <small id="selectedFileName"
+                               class="text-muted d-block mt-2">
+                            Henüz dosya seçilmedi.
+                        </small>
+
+                    </div>
+
+                    <!-- Active Status -->
+                    <div class="cp-title">
+                        Yayın Durumu
+                    </div>
+
+                    <div class="cp-status form-check form-switch m-0">
+
+                        <div>
+                            <div class="fw-semibold small"
+                                 id="projectStatusText">
+                                @(Model.IsActive ? "Aktif" : "Pasif")
+                            </div>
+
+                            <small class="text-muted">
+                                Proje ana sayfada görüntülensin.
+                            </small>
+                        </div>
+
+                        <input asp-for="IsActive"
+                               class="form-check-input m-0"
+                               role="switch" />
+
+                    </div>
+
+                    <small class="text-muted mt-2">
+                        Pasif projeler Admin panelinde görünür ancak
+                        ziyaretçilerin gördüğü proje listesinde gösterilmez.
+                    </small>
+
+                    <!-- Buttons -->
+                    <div class="mt-auto pt-4 d-grid gap-2">
+
+                        <button type="submit"
+                                class="cp-btn"
+                                id="saveProjectBtn">
+
+                            <i class="bi bi-check-circle me-1"></i>
+                            Projeyi Kaydet
+
+                        </button>
+
+                        <a asp-area="Admin"
+                           asp-controller="Project"
+                           asp-action="ProjectList"
+                           class="cp-btn-light text-center text-decoration-none">
+                            Vazgeç
+                        </a>
+
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </form>
+
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+
+        // Image Preview
+        const imageInput = document.getElementById("ImageFile");
+        const imagePreview = document.getElementById("projectImagePreview");
+        const selectedFileName = document.getElementById("selectedFileName");
+
+        if (imageInput && imagePreview) {
+            imageInput.addEventListener("change", function () {
+
+                const file = this.files && this.files[0];
+
+                if (!file) {
+                    imagePreview.removeAttribute("src");
+                    imagePreview.classList.add("d-none");
+
+                    if (selectedFileName) {
+                        selectedFileName.textContent = "Henüz dosya seçilmedi.";
+                    }
+
+                    return;
+                }
+
+                if (selectedFileName) {
+                    selectedFileName.textContent = file.name;
+                }
+
+                if (!file.type.startsWith("image/")) {
+                    imagePreview.removeAttribute("src");
+                    imagePreview.classList.add("d-none");
+                    return;
+                }
+
+                const reader = new FileReader();
+
+                reader.onload = function (event) {
+                    imagePreview.src = event.target.result;
+                    imagePreview.classList.remove("d-none");
+                };
+
+                reader.readAsDataURL(file);
+            });
+        }
+
+        // Active / Passive Switch
+        const statusSwitch = document.getElementById("IsActive");
+        const statusText = document.getElementById("projectStatusText");
+
+        if (statusSwitch && statusText) {
+            statusSwitch.addEventListener("change", function () {
+                statusText.textContent = this.checked ? "Aktif" : "Pasif";
+            });
+        }
+
+        // Prevent duplicate submissions
+        const form = document.querySelector(".cp form");
+        const saveButton = document.getElementById("saveProjectBtn");
+
+        if (form && saveButton) {
+            form.addEventListener("submit", function () {
+                if (!form.checkValidity()) return;
+
+                saveButton.disabled = true;
+                saveButton.innerHTML =
+                    '<span class="spinner-border spinner-border-sm me-2"></span>Kaydediliyor...';
+            });
+        }
+
+    });
+</script>

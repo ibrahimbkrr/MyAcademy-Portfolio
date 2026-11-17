@@ -1,0 +1,375 @@
+﻿@model MyAcademy_PortfolioProject.Areas.Admin.Models.HeroTitleFormViewModel
+
+@{
+    ViewData["Title"] = "Yeni Hareketli Başlık";
+    Layout = "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
+}
+
+<style>
+    .hero-title-form {
+        --primary: #2f5d4e;
+        --soft: #e7efe9;
+        --border-color: #ebe8e1;
+    }
+
+        .hero-title-form .form-card {
+            background: #fff;
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 28px;
+            box-shadow: 0 2px 12px rgba(0,0,0,.04);
+            height: 100%;
+        }
+
+        .hero-title-form .card-heading {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 26px;
+        }
+
+        .hero-title-form .card-icon {
+            display: grid;
+            place-items: center;
+            width: 48px;
+            height: 48px;
+            background: var(--soft);
+            color: var(--primary);
+            border-radius: 12px;
+            font-size: 1.4rem;
+        }
+
+        .hero-title-form .form-label {
+            font-weight: 600;
+            color: #555;
+            font-size: .89rem;
+            margin-bottom: 9px;
+        }
+
+        .hero-title-form .form-control {
+            border: 1px solid var(--border-color);
+            background: #fcfbf9;
+            border-radius: 10px;
+            padding: 12px 14px;
+        }
+
+            .hero-title-form .form-control:focus {
+                border-color: var(--primary);
+                box-shadow: 0 0 0 .2rem rgba(47,93,78,.12);
+            }
+
+        .hero-title-form .switch-box {
+            border: 1px solid var(--border-color);
+            background: #fcfbf9;
+            padding: 18px;
+            border-radius: 12px;
+        }
+
+        .hero-title-form .form-check-input:checked {
+            background-color: var(--primary);
+            border-color: var(--primary);
+        }
+
+        .hero-title-form .save-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 12px 22px;
+            font-weight: 600;
+        }
+
+            .hero-title-form .save-btn:hover {
+                background: #244a3e;
+            }
+
+        .hero-title-form .demo-box {
+            background: #f8faf7;
+            border: 1px solid var(--border-color);
+            padding: 26px 20px;
+            border-radius: 14px;
+            text-align: center;
+        }
+
+        .hero-title-form .demo-label {
+            font-size: .8rem;
+            letter-spacing: .1em;
+            color: var(--primary);
+            font-weight: 700;
+        }
+
+        .hero-title-form .demo-title {
+            color: var(--primary);
+            font-size: 1.5rem;
+            font-weight: 700;
+            overflow-wrap: anywhere;
+            margin: 20px 0;
+        }
+
+        .hero-title-form .demo-cursor {
+            animation: heroCursorBlink .85s step-end infinite;
+        }
+
+    @@keyframes heroCursorBlink {
+        50% {
+            opacity: 0;
+        }
+    }
+
+    @@media (max-width: 767px) {
+        .hero-title-form .form-card {
+            padding: 20px;
+        }
+    }
+</style>
+
+<div class="hero-title-form container-fluid py-4">
+
+    <!-- HEADER -->
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
+
+        <div>
+            <h4 class="mb-1">Yeni Hareketli Başlık</h4>
+
+            <p class="text-muted mb-0">
+                Hero bölümündeki typewriter animasyonuna yeni bir metin ekleyin.
+            </p>
+        </div>
+
+        <a asp-area="Admin"
+           asp-controller="HeroTitle"
+           asp-action="HeroTitleList"
+           class="btn btn-outline-secondary">
+
+            <i class="bi bi-arrow-left me-1"></i>
+            Başlık Listesine Dön
+        </a>
+    </div>
+
+    <form asp-area="Admin"
+          asp-controller="HeroTitle"
+          asp-action="CreateHeroTitle"
+          method="post"
+          id="createHeroTitleForm">
+
+        @Html.AntiForgeryToken()
+
+        <div asp-validation-summary="ModelOnly"
+             class="text-danger mb-3"></div>
+
+        <div class="row g-4">
+
+            <!-- FORM -->
+            <div class="col-lg-7">
+
+                <div class="form-card">
+
+                    <div class="card-heading">
+                        <div class="card-icon">
+                            <i class="bi bi-type"></i>
+                        </div>
+
+                        <div>
+                            <h5 class="mb-1">Başlık Bilgileri</h5>
+                            <small class="text-muted">
+                                Metin, sıralama ve yayın ayarları
+                            </small>
+                        </div>
+                    </div>
+
+                    <!-- TITLE -->
+                    <div class="mb-4">
+
+                        <label asp-for="Title" class="form-label">
+                            Hareketli Başlık *
+                        </label>
+
+                        <input asp-for="Title"
+                               class="form-control"
+                               maxlength="150"
+                               required
+                               placeholder="Örn: QA Automation Engineer" />
+
+                        <span asp-validation-for="Title"
+                              class="text-danger small"></span>
+
+                        <small class="text-muted d-block mt-2">
+                            Ana sayfada sırayla yazılacak metni giriniz.
+                        </small>
+                    </div>
+
+                    <!-- ORDER -->
+                    <div class="mb-4">
+
+                        <label asp-for="Order" class="form-label">
+                            Gösterim Sırası
+                        </label>
+
+                        <input asp-for="Order"
+                               class="form-control"
+                               type="number"
+                               min="0" />
+
+                        <span asp-validation-for="Order"
+                              class="text-danger small"></span>
+
+                        <small class="text-muted d-block mt-2">
+                            Küçük sayılar önce görüntülenir.
+                        </small>
+                    </div>
+
+                    <!-- ACTIVE STATUS -->
+                    <div class="switch-box mb-4">
+
+                        <div class="form-check form-switch">
+
+                            <input asp-for="IsActive"
+                                   class="form-check-input"
+                                   role="switch" />
+
+                            <label asp-for="IsActive"
+                                   class="form-check-label fw-semibold">
+                                Başlık Aktif Olsun
+                            </label>
+
+                        </div>
+
+                        <small class="text-muted d-block mt-2"
+                               id="heroTitleStatusText">
+
+                            @(Model.IsActive
+                                                        ? "Başlık animasyonda gösterilecek."
+                                                        : "Başlık animasyonda gösterilmeyecek.")
+
+                        </small>
+                    </div>
+
+                    <!-- ACTIONS -->
+                    <div class="d-flex gap-2 flex-wrap">
+
+                        <button type="submit"
+                                class="save-btn"
+                                id="createHeroTitleButton">
+
+                            <i class="bi bi-check-circle me-1"></i>
+                            Başlığı Kaydet
+                        </button>
+
+                        <a asp-area="Admin"
+                           asp-controller="HeroTitle"
+                           asp-action="HeroTitleList"
+                           class="btn btn-light px-4">
+
+                            Vazgeç
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- PREVIEW -->
+            <div class="col-lg-5">
+
+                <div class="form-card">
+
+                    <h5 class="mb-2">
+                        <i class="bi bi-eye me-2"></i>
+                        Başlık Önizlemesi
+                    </h5>
+
+                    <p class="text-muted small mb-4">
+                        Metni yazdıkça önizleme güncellenir.
+                    </p>
+
+                    <div class="demo-box">
+
+                        <div class="demo-label">
+                            HERO TYPEWRITER
+                        </div>
+
+                        <div class="demo-title">
+                            <span id="heroTitlePreview">Yeni Başlık</span><span class="demo-cursor">|</span>
+                        </div>
+
+                        <span id="heroTitlePreviewStatus"
+                              class="badge bg-success">
+                            Aktif
+                        </span>
+
+                    </div>
+
+                    <div class="alert alert-light border mt-4 mb-0 small">
+                        <i class="bi bi-info-circle me-1"></i>
+
+                        Gerçek ana sayfada metin, mevcut typewriter
+                        animasyonu tarafından yazılıp silinecek.
+                        Bu önizleme metnin kendisini gösterir.
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </form>
+
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+
+        const titleInput = document.getElementById("Title");
+        const previewTitle = document.getElementById("heroTitlePreview");
+
+        const activeInput = document.getElementById("IsActive");
+        const statusText = document.getElementById("heroTitleStatusText");
+        const previewStatus = document.getElementById("heroTitlePreviewStatus");
+
+        function updateTitlePreview() {
+            previewTitle.textContent =
+                titleInput.value.trim() || "Yeni Başlık";
+        }
+
+        function updateStatus() {
+            const isActive = activeInput.checked;
+
+            statusText.textContent = isActive
+                ? "Başlık animasyonda gösterilecek."
+                : "Başlık animasyonda gösterilmeyecek.";
+
+            previewStatus.textContent = isActive
+                ? "Aktif"
+                : "Pasif";
+
+            previewStatus.classList.toggle(
+                "bg-success", isActive
+            );
+
+            previewStatus.classList.toggle(
+                "bg-secondary", !isActive
+            );
+        }
+
+        titleInput.addEventListener("input", updateTitlePreview);
+        activeInput.addEventListener("change", updateStatus);
+
+        updateTitlePreview();
+        updateStatus();
+
+        const form = document.getElementById("createHeroTitleForm");
+        const saveButton = document.getElementById("createHeroTitleButton");
+
+        form.addEventListener("submit", function () {
+            if (!form.checkValidity()) return;
+
+            saveButton.disabled = true;
+            saveButton.innerHTML =
+                '<span class="spinner-border spinner-border-sm me-2"></span>' +
+                'Kaydediliyor...';
+        });
+
+    });
+</script>

@@ -1,0 +1,207 @@
+﻿@model List<MyAcademy_PortfolioProject.Entities.Message>
+
+@{
+    ViewData["Title"] = "Mesaj Listesi";
+    Layout = "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
+
+    var totalMessages = Model.Count;
+    var unreadMessages = Model.Count(x => !x.IsRead);
+    var readMessages = Model.Count(x => x.IsRead);
+}
+
+<div class="container-fluid py-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h4 class="mb-1">Mesaj Yönetimi</h4>
+            <p class="text-muted mb-0">
+                Gelen mesajlarınızı görüntüleyebilir ve yönetebilirsiniz.
+            </p>
+        </div>
+
+        <a asp-area="Admin"
+           asp-controller="Message"
+           asp-action="CreateMessage"
+           class="btn btn-primary">
+            <i class="bi bi-plus-lg me-1"></i>
+            Yeni Mesaj
+        </a>
+    </div>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show"
+             role="alert">
+            <i class="bi bi-check-circle-fill me-2"></i>
+            @TempData["SuccessMessage"]
+
+            <button type="button"
+                    class="btn-close"
+                    data-bs-dismiss="alert"
+                    aria-label="Kapat">
+            </button>
+        </div>
+    }
+
+    <!-- Statistics -->
+    <div class="row g-3 mb-4">
+
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <div class="text-muted small">Toplam Mesaj</div>
+                    <h3 class="mb-0">@totalMessages</h3>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <div class="text-muted small">Okunmamış Mesaj</div>
+                    <h3 class="mb-0 text-warning">@unreadMessages</h3>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <div class="text-muted small">Okunmuş Mesaj</div>
+                    <h3 class="mb-0 text-success">@readMessages</h3>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Message Table -->
+    <div class="card border-0 shadow-sm">
+        <div class="card-body">
+
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+
+                    <thead class="table-light">
+                        <tr>
+                            <th>#</th>
+                            <th>Gönderen</th>
+                            <th>Konu</th>
+                            <th>Tarih (UTC)</th>
+                            <th>Durum</th>
+                            <th>İşlemler</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        @foreach (var item in Model)
+                        {
+                            <tr class="@(item.IsRead ? "" : "table-warning")">
+
+                                <td>@item.MessageId</td>
+
+                                <td>
+                                    <div class="@(item.IsRead ? "" : "fw-bold")">
+                                        @item.SenderName
+                                    </div>
+
+                                    <small class="text-muted">
+                                        @item.SenderEmail
+                                    </small>
+                                </td>
+
+                                <td>
+                                    @(string.IsNullOrWhiteSpace(item.Subject)
+                                                                    ? "Konu belirtilmemiş"
+                                                                    : item.Subject)
+                            </td>
+
+                                <td>
+                                    @item.SentDate.ToString("dd.MM.yyyy HH:mm")
+                                </td>
+
+                                <td>
+                                @if (item.IsRead)
+                                    {
+                                        <span class="badge bg-success">
+                                            Okundu
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-warning text-dark">
+                                            Okunmadı
+                                        </span>
+                                    }
+                                </td>
+
+                                <td>
+                                    <div class="d-flex flex-wrap gap-2">
+
+                                        <!-- Details -->
+                                        <a asp-area="Admin"
+                                           asp-controller="Message"
+                                           asp-action="MessageDetails"
+                                           asp-route-id="@item.MessageId"
+                                           class="btn btn-info btn-sm">
+                                            <i class="bi bi-eye"></i>
+                                            Aç
+                                        </a>
+
+                                        <!-- Update -->
+                                        <a asp-area="Admin"
+                                           asp-controller="Message"
+                                           asp-action="UpdateMessage"
+                                           asp-route-id="@item.MessageId"
+                                           class="btn btn-warning btn-sm">
+                                            <i class="bi bi-pencil-square"></i>
+                                            Düzenle
+                                        </a>
+
+                                        <!-- Delete -->
+                                        <form asp-area="Admin"
+                                              asp-controller="Message"
+                                              asp-action="DeleteMessage"
+                                              asp-route-id="@item.MessageId"
+                                              method="post"
+                                              onsubmit="return confirm('Bu mesajı silmek istediğinize emin misiniz?');">
+
+                                            @Html.AntiForgeryToken()
+
+                                            <button type="submit"
+                                                    class="btn btn-danger btn-sm">
+                                                <i class="bi bi-trash"></i>
+                                                Sil
+                                            </button>
+                                        </form>
+
+                                    </div>
+                                </td>
+
+                            </tr>
+                        }
+
+                    </tbody>
+                </table>
+            </div>
+
+            @if (!Model.Any())
+            {
+                <div class="text-center py-5">
+                    <i class="bi bi-inbox fs-1 text-muted"></i>
+
+                    <h5 class="mt-3">
+                        Henüz mesaj bulunmuyor
+                    </h5>
+
+                    <p class="text-muted">
+                        Yeni mesajlar burada listelenecektir.
+                    </p>
+                </div>
+            }
+
+        </div>
+    </div>
+
+</div>

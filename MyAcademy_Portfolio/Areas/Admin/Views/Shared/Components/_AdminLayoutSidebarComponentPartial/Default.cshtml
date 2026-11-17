@@ -1,0 +1,314 @@
+﻿@{
+    // Mevcut Controller ve Action bilgilerini al
+    var currentController =
+        ViewContext.RouteData.Values["controller"]?.ToString() ?? "";
+
+    var currentAction =
+        ViewContext.RouteData.Values["action"]?.ToString() ?? "";
+
+    // DASHBOARD
+    bool isDashboard = currentController == "Dashboard";
+
+    // HERO YÖNETİMİ
+    bool isHeroSection = currentController == "HeroSection";
+    bool isHeroTitle = currentController == "HeroTitle";
+
+    // HAKKIMDA
+    bool isAbout = currentController == "About";
+
+    // SOSYAL MEDYA
+    bool isSocialMedia = currentController == "SocialMedia";
+
+    // YETENEKLER
+    bool isSkills = currentController == "Skill";
+    bool isSkillCategories = currentController == "SkillCategory";
+
+    // DENEYİMLER
+    bool isExperience = currentController == "Experience";
+
+    // PROJELER
+    bool isProjects = currentController == "Project";
+    bool isCategories = currentController == "Category";
+
+    // EĞİTİM VE EĞİTİM İÇERİĞİ
+    bool isEducation =
+        currentController == "Education" ||
+        currentController == "EducationContent";
+
+    // İLETİŞİM
+    bool isContact = currentController == "Contact";
+
+    // GELEN MESAJLAR
+    bool isMessages = currentController == "Message";
+
+    bool isPhilosophy = currentController == "Philosophy";
+
+    bool isFooter = currentController == "Footer";
+
+}
+
+<aside class="admin-sidebar" id="adminSidebar">
+
+    <!-- BRAND HEADER -->
+    <div class="sidebar-header">
+
+        <div class="brand-mark">
+            <i class="bi bi-briefcase-fill"></i>
+        </div>
+
+        <div class="brand-text">
+            <h1>İbrahim Bakar</h1>
+            <span>Yönetim Paneli</span>
+        </div>
+
+    </div>
+
+    <!-- MENU LINKS -->
+    <div class="sidebar-menu-wrapper">
+
+        <div class="menu-section-label">
+            Menü
+        </div>
+
+        <ul class="sidebar-nav">
+
+            <!-- DASHBOARD -->
+            <li>
+                <a asp-area="Admin"
+                   asp-controller="Dashboard"
+                   asp-action="Index"
+                   class="sidebar-link @(isDashboard ? "active" : "")">
+
+                    <i class="bi bi-grid-1x2"></i>
+                    <span>Dashboard</span>
+                </a>
+            </li>
+
+            <!-- HERO SECTION -->
+            <li>
+                <a asp-area="Admin"
+                   asp-controller="HeroSection"
+                   asp-action="EditHero"
+                   class="sidebar-link @(isHeroSection ? "active" : "")">
+
+                    <i class="bi bi-layout-text-window-reverse"></i>
+                    <span>Hero Yönetimi</span>
+                </a>
+            </li>
+
+            <!-- HERO TITLES -->
+            <li>
+                <a asp-area="Admin"
+                   asp-controller="HeroTitle"
+                   asp-action="HeroTitleList"
+                   class="sidebar-link @(isHeroTitle ? "active" : "")">
+
+                    <i class="bi bi-type"></i>
+                    <span>Hareketli Başlıklar</span>
+                </a>
+            </li>
+
+            <!-- ABOUT -->
+            <li>
+                <a asp-area="Admin"
+                   asp-controller="About"
+                   asp-action="EditAbout"
+                   class="sidebar-link @(isAbout ? "active" : "")">
+
+                    <i class="bi bi-person"></i>
+                    <span>Hakkımda</span>
+                </a>
+            </li>
+
+            <!-- PHILOSOPHY -->
+            <li>
+                <a asp-area="Admin"
+                   asp-controller="Philosophy"
+                   asp-action="EditPhilosophy"
+                   class="sidebar-link @(isPhilosophy ? "active" : "")">
+
+                    <i class="bi bi-chat-square-quote"></i>
+                    <span>Felsefem</span>
+                </a>
+            </li>
+
+            <!-- SOCIAL MEDIA -->
+            <li>
+                <a asp-area="Admin"
+                   asp-controller="SocialMedia"
+                   asp-action="SocialMediaList"
+                   class="sidebar-link @(isSocialMedia ? "active" : "")">
+
+                    <i class="bi bi-share"></i>
+                    <span>Sosyal Medya</span>
+                </a>
+            </li>
+
+            <!-- SKILLS -->
+            <li>
+                <a asp-area="Admin"
+                   asp-controller="Skill"
+                   asp-action="SkillList"
+                   class="sidebar-link @(isSkills ? "active" : "")">
+
+                    <i class="bi bi-stars"></i>
+                    <span>Yeteneklerim</span>
+                </a>
+            </li>
+
+            <!-- SKILL CATEGORIES -->
+            <li>
+                <a asp-area="Admin"
+                   asp-controller="SkillCategory"
+                   asp-action="CategoryList"
+                   class="sidebar-link @(isSkillCategories ? "active" : "")">
+
+                    <i class="bi bi-grid-3x3-gap"></i>
+                    <span>Yetenek Kategorileri</span>
+                </a>
+            </li>
+
+            <!-- EXPERIENCES -->
+            <li>
+                <a asp-area="Admin"
+                   asp-controller="Experience"
+                   asp-action="ExperienceList"
+                   class="sidebar-link @(isExperience ? "active" : "")">
+
+                    <i class="bi bi-journal-bookmark-fill"></i>
+                    <span>Deneyimlerim</span>
+                </a>
+            </li>
+
+            <!-- PROJECTS -->
+            <li>
+                <a asp-area="Admin"
+                   asp-controller="Project"
+                   asp-action="ProjectList"
+                   class="sidebar-link @(isProjects ? "active" : "")">
+
+                    <i class="bi bi-code-slash"></i>
+                    <span>Projelerim</span>
+                </a>
+            </li>
+
+            <!-- PROJECT CATEGORIES -->
+            <li>
+                <a asp-area="Admin"
+                   asp-controller="Category"
+                   asp-action="CategoryList"
+                   class="sidebar-link @(isCategories ? "active" : "")">
+
+                    <i class="bi bi-tags"></i>
+                    <span>Proje Kategorileri</span>
+                </a>
+            </li>
+
+            <!-- EDUCATION -->
+            <li>
+                <a asp-area="Admin"
+                   asp-controller="Education"
+                   asp-action="EducationList"
+                   class="sidebar-link @(isEducation ? "active" : "")">
+
+                    <i class="bi bi-mortarboard"></i>
+                    <span>Eğitim</span>
+                </a>
+            </li>
+
+            <!-- CONTACT -->
+            <li>
+                <a asp-area="Admin"
+                   asp-controller="Contact"
+                   asp-action="ContactList"
+                   class="sidebar-link @(isContact ? "active" : "")">
+
+                    <i class="bi bi-envelope"></i>
+                    <span>İletişim</span>
+                </a>
+            </li>
+
+
+            <!-- FOOTER -->
+            <li>
+                <a asp-area="Admin"
+                   asp-controller="Footer"
+                   asp-action="EditFooter"
+                   class="sidebar-link @(isFooter ? "active" : "")">
+
+                    <i class="bi bi-layout-text-window"></i>
+                    <span>Footer Yönetimi</span>
+                </a>
+            </li>
+
+
+            <!-- MESSAGES -->
+            <li>
+                <a asp-area="Admin"
+                   asp-controller="Message"
+                   asp-action="MessageList"
+                   class="sidebar-link @(isMessages ? "active" : "")">
+
+                    <i class="bi bi-inbox"></i>
+                    <span>Gelen Mesajlar</span>
+                </a>
+            </li>
+
+        </ul>
+
+        <!-- SYSTEM AND LINKS -->
+        <div class="menu-section-label mt-4">
+            Sistem & Bağlantı
+        </div>
+
+        <ul class="sidebar-nav">
+
+            <!-- PREVIEW WEBSITE -->
+            <li>
+                <a asp-area=""
+                   asp-controller="Default"
+                   asp-action="Index"
+                   class="sidebar-link"
+                   target="_blank"
+                   rel="noopener noreferrer">
+
+                    <i class="bi bi-box-arrow-up-right"></i>
+                    <span>Siteyi Önizle</span>
+                </a>
+            </li>
+
+        </ul>
+
+    </div>
+
+    <!-- ADMIN FOOTER -->
+    <div class="sidebar-footer">
+
+        <div class="admin-user-card">
+
+            <div class="user-avatar-circle">
+                AK
+            </div>
+
+            <div class="user-info">
+                <div class="user-name">
+                    Admin Kullanıcı
+                </div>
+
+                <div class="user-role">
+                    İçerik Yöneticisi
+                </div>
+            </div>
+
+            <form id="logoutForm" asp-area="Admin" asp-controller="Account" asp-action="Logout" method="post">
+                @Html.AntiForgeryToken()
+                <button type="submit" class="btn-logout border-0" title="Çıkış yap" aria-label="Çıkış yap">
+                    <i class="bi bi-box-arrow-right"></i>
+                </button>
+            </form>
+
+        </div>
+
+    </div>
+
+</aside>

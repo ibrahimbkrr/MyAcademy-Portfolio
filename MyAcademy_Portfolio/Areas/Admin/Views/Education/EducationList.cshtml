@@ -1,0 +1,298 @@
+﻿@model List<MyAcademy_PortfolioProject.Entities.Education>
+@using System.Globalization
+
+@{
+    ViewData["Title"] = "Eğitim Yönetimi";
+    Layout = "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
+
+    var tr = CultureInfo.GetCultureInfo("tr-TR");
+    var totalCount = Model.Count;
+    var activeCount = Model.Count(x => x.IsActive);
+    var passiveCount = Model.Count(x => !x.IsActive);
+    var currentCount = Model.Count(x => x.IsCurrent);
+}
+
+<style>
+    .education-admin {
+        --green: #2f5d4e;
+        --green-soft: #e7efe9;
+        --border: #ebe8e1;
+    }
+
+        .education-admin .education-card,
+        .education-admin .education-stat {
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: 15px;
+            box-shadow: 0 2px 12px rgba(0,0,0,.04);
+        }
+
+        .education-admin .education-card {
+            padding: 1.5rem;
+        }
+
+        .education-admin .education-stat {
+            padding: 1.3rem;
+            height: 100%;
+        }
+
+            .education-admin .education-stat h3 {
+                margin: .5rem 0 0;
+                font-size: 1.8rem;
+                font-weight: 700;
+            }
+
+        .education-admin .primary-button {
+            display: inline-flex;
+            align-items: center;
+            gap: .4rem;
+            padding: .7rem 1rem;
+            border: 0;
+            border-radius: 10px;
+            background: var(--green);
+            color: white;
+            text-decoration: none;
+        }
+
+            .education-admin .primary-button:hover {
+                background: #244a3e;
+                color: white;
+            }
+
+        .education-admin .education-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 42px;
+            height: 42px;
+            background: var(--green-soft);
+            color: var(--green);
+            border-radius: 11px;
+            font-size: 1.15rem;
+        }
+
+        .education-admin .education-type {
+            display: inline-block;
+            background: var(--green-soft);
+            color: var(--green);
+            padding: 5px 10px;
+            border-radius: 7px;
+            font-size: .8rem;
+        }
+
+        .education-admin .education-order {
+            background: #f3f2ee;
+            border-radius: 7px;
+            padding: 5px 10px;
+        }
+</style>
+
+<div class="education-admin container-fluid py-4">
+
+    <!-- HEADER -->
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
+        <div>
+            <h4 class="mb-1">Eğitim Yönetimi</h4>
+            <p class="text-muted mb-0">
+                Eğitim geçmişinizi ve bölüm içeriklerini yönetin.
+            </p>
+        </div>
+
+        <div class="d-flex gap-2 flex-wrap">
+            <a asp-area="Admin"
+               asp-controller="EducationContent"
+               asp-action="EditContent"
+               class="btn btn-outline-secondary">
+                <i class="bi bi-file-text me-1"></i>
+                Bölüm İçeriği
+            </a>
+
+            <a asp-area="Admin"
+               asp-controller="Education"
+               asp-action="CreateEducation"
+               class="primary-button">
+                <i class="bi bi-plus-lg"></i>
+                Yeni Eğitim Ekle
+            </a>
+        </div>
+    </div>
+
+    <!-- NOTIFICATIONS -->
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show"
+             role="alert">
+            <i class="bi bi-check-circle-fill me-2"></i>
+            @TempData["SuccessMessage"]
+
+            <button type="button" class="btn-close"
+                    data-bs-dismiss="alert" aria-label="Kapat"></button>
+        </div>
+    }
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show"
+             role="alert">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+            @TempData["ErrorMessage"]
+
+            <button type="button" class="btn-close"
+                    data-bs-dismiss="alert" aria-label="Kapat"></button>
+        </div>
+    }
+
+    <!-- STATISTICS -->
+    <div class="row g-3 mb-4">
+        <div class="col-md-3">
+            <div class="education-stat">
+                <small class="text-muted">Toplam Eğitim</small>
+                <h3>@totalCount</h3>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="education-stat">
+                <small class="text-muted">Aktif Eğitim</small>
+                <h3>@activeCount</h3>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="education-stat">
+                <small class="text-muted">Pasif Eğitim</small>
+                <h3>@passiveCount</h3>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="education-stat">
+                <small class="text-muted">Devam Eden Eğitim</small>
+                <h3>@currentCount</h3>
+            </div>
+        </div>
+    </div>
+
+    <!-- TABLE -->
+    <div class="education-card">
+        <div class="table-responsive">
+
+            <table class="table table-hover align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th>ID</th>
+                        <th>Eğitim</th>
+                        <th>Türü</th>
+                        <th>Tarih Aralığı</th>
+                        <th>Sıra</th>
+                        <th>Durum</th>
+                        <th>İşlemler</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        var startText = item.StartDate?.ToString(
+                        "MMMM yyyy", tr) ?? "Belirtilmemiş";
+
+                        var endText = item.IsCurrent
+                        ? "Devam Ediyor"
+                        : item.EndDate?.ToString(
+                        "MMMM yyyy", tr) ?? "Belirtilmemiş";
+
+                        <tr>
+                            <td>#@item.EducationId</td>
+
+                            <td>
+                                <div class="d-flex align-items-center gap-3">
+                                    <div class="education-icon">
+                                        <i class="bi bi-mortarboard"></i>
+                                    </div>
+                                    <div>
+                                        <div class="fw-semibold">
+                                            @item.Title
+                                        </div>
+                                        <small class="text-muted">
+                                            @item.Institution
+                                        </small>
+                                    </div>
+                                </div>
+                            </td>
+
+                            <td>
+                                <span class="education-type">
+                                    @item.EducationType
+                                </span>
+                            </td>
+
+                            <td>
+                                <small>
+                                    <i class="bi bi-calendar2-range me-1"></i>
+                                    @startText - @endText
+                                </small>
+                            </td>
+
+                            <td>
+                                <span class="education-order">
+                                    @item.DisplayOrder
+                                </span>
+                            </td>
+
+                            <td>
+                                @if (item.IsActive)
+                                {
+                                    <span class="badge bg-success">Aktif</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-secondary">Pasif</span>
+                                }
+                            </td>
+
+                            <td>
+                                <div class="d-flex flex-wrap gap-2">
+                                    <a asp-area="Admin"
+                                       asp-controller="Education"
+                                       asp-action="UpdateEducation"
+                                       asp-route-id="@item.EducationId"
+                                       class="btn btn-warning btn-sm">
+                                        <i class="bi bi-pencil-square me-1"></i>
+                                        Düzenle
+                                    </a>
+
+                                    <form asp-area="Admin"
+                                          asp-controller="Education"
+                                          asp-action="DeleteEducation"
+                                          asp-route-id="@item.EducationId"
+                                          method="post"
+                                          onsubmit="return confirm('Bu eğitimi kalıcı olarak silmek istediğinize emin misiniz?');">
+
+                                        @Html.AntiForgeryToken()
+
+                                        <button type="submit"
+                                                class="btn btn-danger btn-sm">
+                                            <i class="bi bi-trash me-1"></i>
+                                            Sil
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        @if (!Model.Any())
+        {
+            <div class="text-center py-5">
+                <i class="bi bi-mortarboard fs-1 text-muted"></i>
+                <h5 class="mt-3">Henüz eğitim bulunmuyor</h5>
+                <p class="text-muted">
+                    İlk eğitim kaydınızı ekleyerek başlayabilirsiniz.
+                </p>
+            </div>
+        }
+    </div>
+</div>

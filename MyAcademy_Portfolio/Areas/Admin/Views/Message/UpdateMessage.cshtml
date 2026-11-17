@@ -1,0 +1,338 @@
+﻿@model MyAcademy_PortfolioProject.Entities.Message
+
+@{
+    ViewData["Title"] = "Mesaj Güncelle";
+    Layout = "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
+}
+
+<style>
+    .um {
+        --g: #2f5d4e;
+        --g-soft: #e7efe9;
+        --line: #ebe8e1;
+    }
+
+    .um-card {
+        background: #fff;
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        padding: 1.75rem;
+        height: 100%;
+        box-shadow: 0 2px 12px rgba(0,0,0,.04);
+    }
+
+    .um-head {
+        display: flex;
+        align-items: center;
+        gap: .9rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .um-icon {
+        width: 46px;
+        height: 46px;
+        border-radius: 12px;
+        background: var(--g-soft);
+        color: var(--g);
+        display: grid;
+        place-items: center;
+        font-size: 1.3rem;
+    }
+
+    .um-head h4 {
+        margin: 0;
+        font-weight: 600;
+    }
+
+    .um-head small {
+        color: #8a8a85;
+    }
+
+    .um .form-label {
+        font-size: .85rem;
+        font-weight: 500;
+        color: #6b6b66;
+        margin-bottom: .4rem;
+    }
+
+    .um .form-control {
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        padding: .7rem .9rem;
+        background: #fcfbf9;
+    }
+
+        .um .form-control:focus {
+            border-color: var(--g);
+            background: #fff;
+            box-shadow: 0 0 0 .2rem rgba(47,93,78,.12);
+        }
+
+        .um .form-control[readonly] {
+            background: #f3f3f0;
+            color: #777;
+        }
+
+    .um textarea {
+        min-height: 220px;
+        resize: vertical;
+    }
+
+    .um-title {
+        font-size: .75rem;
+        letter-spacing: .08em;
+        text-transform: uppercase;
+        color: #9a9a94;
+        font-weight: 600;
+        margin-bottom: 1rem;
+    }
+
+    .um-status {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: .9rem 1rem;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        background: #fcfbf9;
+    }
+
+        .um-status .form-check-input {
+            width: 2.6em;
+            height: 1.35em;
+            cursor: pointer;
+        }
+
+            .um-status .form-check-input:checked {
+                background-color: var(--g);
+                border-color: var(--g);
+            }
+
+    .um-btn {
+        background: var(--g);
+        color: #fff;
+        border: none;
+        border-radius: 10px;
+        padding: .75rem;
+        font-weight: 500;
+        cursor: pointer;
+    }
+
+        .um-btn:hover {
+            background: #244a3e;
+            color: #fff;
+        }
+
+    .um-btn-light {
+        background: transparent;
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        padding: .75rem;
+        color: #555;
+    }
+
+        .um-btn-light:hover {
+            background: #f5f3ee;
+        }
+</style>
+
+<div class="um container-fluid py-4">
+
+    <div class="mb-4">
+        <h4 class="mb-1">Mesaj Güncelleme</h4>
+
+        <p class="text-muted mb-0">
+            Mesaj bilgilerini ve okunma durumunu düzenleyin.
+        </p>
+    </div>
+
+    <form asp-area="Admin"
+          asp-controller="Message"
+          asp-action="UpdateMessage"
+          method="post">
+
+        @Html.AntiForgeryToken()
+
+        <input type="hidden" asp-for="MessageId" />
+
+        <div asp-validation-summary="ModelOnly"
+             class="text-danger mb-3"></div>
+
+        <div class="row g-4">
+
+            <!-- Left Column -->
+            <div class="col-xl-8 col-lg-7">
+
+                <div class="um-card">
+
+                    <div class="um-head">
+                        <div class="um-icon">
+                            <i class="bi bi-envelope-open"></i>
+                        </div>
+
+                        <div>
+                            <h4>Mesajı Düzenle</h4>
+
+                            <small>
+                                #@Model.MessageId numaralı mesaj
+                            </small>
+                        </div>
+                    </div>
+
+                    <!-- Name and Email -->
+                    <div class="row">
+
+                        <div class="col-md-6 mb-3">
+
+                            <label asp-for="SenderName"
+                                   class="form-label">
+                                Ad Soyad *
+                            </label>
+
+                            <input asp-for="SenderName"
+                                   class="form-control"
+                                   maxlength="100"
+                                   required />
+
+                            <span asp-validation-for="SenderName"
+                                  class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+
+                            <label asp-for="SenderEmail"
+                                   class="form-label">
+                                E-posta *
+                            </label>
+
+                            <input asp-for="SenderEmail"
+                                   type="email"
+                                   class="form-control"
+                                   maxlength="200"
+                                   required />
+
+                            <span asp-validation-for="SenderEmail"
+                                  class="text-danger small"></span>
+                        </div>
+
+                    </div>
+
+                    <!-- Subject -->
+                    <div class="mb-3">
+
+                        <label asp-for="Subject"
+                               class="form-label">
+                            Konu
+                        </label>
+
+                        <input asp-for="Subject"
+                               class="form-control"
+                               maxlength="200" />
+
+                        <span asp-validation-for="Subject"
+                              class="text-danger small"></span>
+                    </div>
+
+                    <!-- Content -->
+                    <div class="mb-3">
+
+                        <label asp-for="MessageContent"
+                               class="form-label">
+                            Mesaj İçeriği *
+                        </label>
+
+                        <textarea asp-for="MessageContent"
+                                  class="form-control"
+                                  rows="8"
+                                  maxlength="5000"
+                                  required></textarea>
+
+                        <span asp-validation-for="MessageContent"
+                              class="text-danger small"></span>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Right Column -->
+            <div class="col-xl-4 col-lg-5">
+
+                <div class="um-card d-flex flex-column">
+
+                    <div class="um-title">
+                        Mesaj Bilgileri
+                    </div>
+
+                    <!-- Sent Date -->
+                    <div class="mb-4">
+
+                        <label class="form-label">
+                            Gönderim Tarihi (UTC)
+                        </label>
+
+                        <input type="text"
+                               class="form-control"
+                               value="@Model.SentDate.ToString("dd.MM.yyyy HH:mm")"
+                               readonly />
+
+                        <small class="text-muted">
+                            Gönderim tarihi değiştirilemez.
+                        </small>
+                    </div>
+
+                    <!-- Read Status -->
+                    <label class="form-label">
+                        Okunma Durumu
+                    </label>
+
+                    <div class="um-status form-check form-switch m-0">
+
+                        <span id="readStatusText">
+                            @(Model.IsRead ? "Okundu" : "Okunmadı")
+                        </span>
+
+                        <input asp-for="IsRead"
+                               class="form-check-input m-0"
+                               role="switch" />
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="mt-auto pt-4 d-grid gap-2">
+
+                        <button type="submit"
+                                class="um-btn">
+                            <i class="bi bi-check-circle me-1"></i>
+                            Değişiklikleri Kaydet
+                        </button>
+
+                        <a asp-area="Admin"
+                           asp-controller="Message"
+                           asp-action="MessageList"
+                           class="um-btn-light text-center text-decoration-none">
+                            Vazgeç
+                        </a>
+
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </form>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+
+        const readSwitch = document.getElementById("IsRead");
+        const statusText = document.getElementById("readStatusText");
+
+        if (readSwitch && statusText) {
+            readSwitch.addEventListener("change", function () {
+                statusText.textContent =
+                    this.checked ? "Okundu" : "Okunmadı";
+            });
+        }
+
+    });
+</script>

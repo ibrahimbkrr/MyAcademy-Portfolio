@@ -1,0 +1,20 @@
+<script>
+    // Page-specific CRUD, filters and forms are owned by their Razor views.
+    // Only navigation shared by all Admin pages belongs in this component.
+    (() => {
+        const sidebar = document.getElementById('adminSidebar');
+        const toggle = document.getElementById('sidebarToggle');
+        if (!sidebar || !toggle) return;
+
+        toggle.addEventListener('click', () => {
+            sidebar.classList.toggle('show-sidebar');
+        });
+
+        document.addEventListener('click', event => {
+            if (window.innerWidth <= 991.98 &&
+                !sidebar.contains(event.target) && !toggle.contains(event.target)) {
+                sidebar.classList.remove('show-sidebar');
+            }
+        });
+    })();
+</script>
